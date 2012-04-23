@@ -1,6 +1,8 @@
 package no.iterate.geekolympics;
 
 import java.util.Collection;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CommandProcessor {
 	private GeekOlympics geekOlympics = new GeekOlympics();
@@ -14,8 +16,13 @@ public class CommandProcessor {
 			String eventID = parsed[1];
 			addEvent(eventID);
 		} else if ("addComment".equals(command)) {
-			String eventId = parsed[1];
-			String comment = parsed[2];
+			Pattern pattern = Pattern.compile("addComment ([A-Za-z]*) ([A-Za-z ]*)");
+			Matcher matcher = pattern.matcher(commandLine);
+			
+			matcher.find();
+			String eventId = matcher.group(1);
+			String comment = matcher.group(2);
+
 			addComment(eventId, comment);
 		} else if ("getComments".equals(command)) {
 			String eventId = parsed[1];
@@ -32,17 +39,17 @@ public class CommandProcessor {
 
 		boolean isFirst = false;
 		int size = comments.size();
-		int counter = 0;
+		int counter = 1;
 		for (String each : comments) {
 			result.append(each);
 			if (!isFirst && size != 1) {
 				isFirst = true;
-				
-				if(counter < size) {
+
+				if (counter < size) {
 					result.append("\n");
 				}
 			}
-			
+
 			counter++;
 		}
 

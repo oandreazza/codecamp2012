@@ -31,5 +31,11 @@ public class TestCommandProcessorTest {
 		assertEquals("comment1\ncomment2", result);
 	}
 	
-	
+	@Test
+	public void shouldAddMultiWordComment() throws Exception {
+		subject.process("addEvent eventId");
+		subject.process("addComment eventId multiword comment");
+		String result = subject.process("getComments eventId");
+		assertEquals("multiword comment", result);
+	}
 }
