@@ -19,7 +19,7 @@ public class AddCommentOnEventTest {
 		Event dashEvent = server.createEvent("100mDash");
 		dashEvent.addComment("this is a cool dash!");
 
-		Collection comments = server.getEventById("100mDash").getComments();
+		Collection<String> comments = server.getEventById("100mDash").getComments();
 
 		assertEquals(1, comments.size());
 		assertEquals("this is a cool dash!", comments.iterator().next());
@@ -33,7 +33,7 @@ public class AddCommentOnEventTest {
 		dashEvent.addComment("this is a cool dash!");
 		dashEvent.addComment("next comment");
 
-		Collection comments = server.getEventById("100mDash").getComments();
+		Collection<String> comments = server.getEventById("100mDash").getComments();
 
 		assertEquals(2, comments.size());
 	}

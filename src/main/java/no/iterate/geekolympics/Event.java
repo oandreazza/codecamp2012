@@ -16,7 +16,7 @@ public class Event {
 		node.put("comment", message);
 	}
 
-	public Collection getComments() {
+	public Collection<String> getComments() {
 		return Arrays.asList(node.get("comment"));
 	}
 

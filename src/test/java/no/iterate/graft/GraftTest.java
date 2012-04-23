@@ -1,4 +1,4 @@
-package no.iterate.geekolympics;
+package no.iterate.graft;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -8,7 +8,7 @@ import no.iterate.graft.Node;
 
 import org.junit.Test;
 
-public class TestGraftTest {
+public class GraftTest {
 
 	@Test
 	public void shouldFindNodeByProperty() {
