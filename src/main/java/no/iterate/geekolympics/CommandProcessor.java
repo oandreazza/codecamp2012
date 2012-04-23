@@ -35,8 +35,7 @@ public class CommandProcessor {
 
 	private String getComments(String eventId) {
 		StringBuilder result = new StringBuilder();
-		Event event = geekOlympics.getEventById(eventId);
-		Collection<String> comments = (Collection<String>) event.getComments();
+		Collection<String> comments = geekOlympics.getComments(eventId);
 
 		boolean isFirst = false;
 		int size = comments.size();
@@ -58,8 +57,7 @@ public class CommandProcessor {
 	}
 
 	private void addComment(String eventId, String comment) {
-		Event event = geekOlympics.getEventById(eventId);
-		event.addComment(comment);
+		geekOlympics.addComment(eventId, comment);
 	}
 
 	private void addEvent(String eventID) {
