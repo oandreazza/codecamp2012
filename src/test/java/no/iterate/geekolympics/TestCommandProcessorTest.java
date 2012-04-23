@@ -19,6 +19,17 @@ public class TestCommandProcessorTest {
 		subject.process("addEvent eventId");
 		subject.process("addComment eventId comment");
 		String result = subject.process("getComments eventId");
-		assertEquals(result, "comment");
+		assertEquals("comment", result);
 	}
+	
+	@Test
+	public void multipleCommentsAreSeparatedByNewlines() throws Exception {
+		subject.process("addEvent eventId");
+		subject.process("addComment eventId comment1");
+		subject.process("addComment eventId comment2");
+		String result = subject.process("getComments eventId");
+		assertEquals("comment1\ncomment2", result);
+	}
+	
+	
 }

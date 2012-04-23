@@ -26,10 +26,27 @@ public class CommandProcessor {
 	}
 
 	private String getComments(String eventId) {
+		StringBuilder result = new StringBuilder();
 		Event event = geekOlympics.getEventById(eventId);
-		Collection comments = event.getComments();
+		Collection<String> comments = (Collection<String>) event.getComments();
 
-		return (String) comments.iterator().next();
+		boolean isFirst = false;
+		int size = comments.size();
+		int counter = 0;
+		for (String each : comments) {
+			result.append(each);
+			if (!isFirst && size != 1) {
+				isFirst = true;
+				
+				if(counter < size) {
+					result.append("\n");
+				}
+			}
+			
+			counter++;
+		}
+
+		return result.toString();
 	}
 
 	private void addComment(String eventId, String comment) {
