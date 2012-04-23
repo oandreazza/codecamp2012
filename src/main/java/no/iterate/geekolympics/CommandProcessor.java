@@ -5,6 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CommandProcessor {
+	private static final String REGEX_PATTERN = "addComment (\\w*) ([\\w ]*)";
 	private GeekOlympics geekOlympics = new GeekOlympics();
 
 	public String process(String commandLine) {
@@ -16,7 +17,7 @@ public class CommandProcessor {
 			String eventID = parsed[1];
 			addEvent(eventID);
 		} else if ("addComment".equals(command)) {
-			Pattern pattern = Pattern.compile("addComment ([A-Za-z]*) ([A-Za-z ]*)");
+			Pattern pattern = Pattern.compile(REGEX_PATTERN);
 			Matcher matcher = pattern.matcher(commandLine);
 			
 			matcher.find();
