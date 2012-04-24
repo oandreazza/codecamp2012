@@ -41,7 +41,7 @@ public class GraftReplicationTest {
 
 		// write some data to first graft
 		Node fromFirst = first.createNode();
-		PropertiesHolder to = first.createNode();
+		Node to = first.createNode();
 		first.createEdge(fromFirst, to);
 
 		first.kill();
@@ -49,8 +49,6 @@ public class GraftReplicationTest {
 		Node fromAtSecond = second.getNodeByProperty("id", fromFirst.getId());
 		Collection<Edge> edges = fromAtSecond.getEdges();
 		assertEquals("The edge should have been replicated", 1, edges.size());
-
-		// TODO verify the edge has the same properties
 	}
 	
 	
@@ -63,7 +61,7 @@ public class GraftReplicationTest {
 
 		// write some data to first graft
 		Node fromFirst = first.createNode();
-		PropertiesHolder to = first.createNode();
+		Node to = first.createNode();
 		Edge firstEdge = first.createEdge(fromFirst, to);
 		firstEdge.put("key", "value");
 

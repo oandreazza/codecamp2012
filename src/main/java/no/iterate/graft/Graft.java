@@ -50,10 +50,10 @@ public class Graft implements NodeListener {
 				+ property + " val : " + value);
 	}
 
-	public Edge createEdge(Node node1, PropertiesHolder node2) {
-		Edge edge = addEdge(node1);
+	public Edge createEdge(Node from, Node to) {
+		Edge edge = addEdge(from, to);
 		for (Graft replica : replicas) {
-			replica.addReplicaEdge(edge.getId(), node1.getId(), node2.getId());
+			replica.addReplicaEdge(edge.getId(), from.getId(), to.getId());
 		}
 		return edge;
 	}
@@ -110,20 +110,21 @@ public class Graft implements NodeListener {
 		return String.valueOf(nextId++);
 	}
 
-	private Edge addEdge(Node node1) {
-		return addEdgeWithId(generateId(), node1);
+	private Edge addEdge(Node from, Node to) {
+		return addEdgeWithId(generateId(), from, to);
 	}
 
-	private Edge addEdgeWithId(String id, Node node1) {
-		Edge edge = new Edge(id, this);
-		node1.addEdge(edge);
+	private Edge addEdgeWithId(String id, Node from, Node to) {
+		Edge edge = new Edge(id, this, from, to);
+		from.addEdge(edge);
 		edges.add(edge);
 		return edge;
 	}
 
 	private void addReplicaEdge(String edgeId, String fromId, String toId) {
 		Node from = getNodeById(fromId);
-		addEdgeWithId(edgeId, from);
+		Node to = getNodeById(toId);
+		addEdgeWithId(edgeId, from, to);
 	}
 
 	private Node getNodeById(String nodeId) {

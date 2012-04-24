@@ -1,5 +1,6 @@
 package no.iterate.graft;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -28,7 +29,7 @@ public class GraftTest {
 		Graft db = new Graft();
 		PropertiesHolder node = db.createNode();
 
-		final boolean[] updated = {false};
+		final boolean[] updated = { false };
 		NodeListener myListener = new NodeListener() {
 			public void update(PropertiesHolder target) {
 				updated[0] = true;
@@ -42,8 +43,18 @@ public class GraftTest {
 
 		// db
 		assertEquals(2, node.getListeners().size());
-		assertTrue("Should have the DB as a listener always", node.getListeners().contains(db));
+		assertTrue("Should have the DB as a listener always", node
+				.getListeners().contains(db));
 	}
 
+	@Test
+	public void edgeKnowsAboutFromAndTo() throws Exception {
+		Graft db = new Graft();
+		Node from = db.createNode();
+		Node to = db.createNode();
+		Edge edge = db.createEdge(from, to);
 
+		assertEquals(to, edge.getTo());
+		assertEquals(from, edge.getFrom());
+	}
 }
