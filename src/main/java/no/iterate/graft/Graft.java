@@ -80,7 +80,7 @@ public class Graft implements NodeListener {
 	}
 
 	private void updateNode(Map<String, String> properties) {
-		Node node = getNodeByProperty("id", properties.get("id"));
+		PropertiesHolder node = getNodeByProperty("id", properties.get("id"));
 
 		node.setProperties(properties);
 	}

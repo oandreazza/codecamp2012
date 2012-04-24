@@ -2,7 +2,6 @@ package no.iterate.graft;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
 
 public class Node extends PropertiesHolder {
 
@@ -23,10 +22,5 @@ public class Node extends PropertiesHolder {
 
 	public Collection<Edge> getEdges() {
 		return edges;
-	}
-
-	void setProperties(Map<String, String> properties) {
-		this.properties.clear();
-		this.properties.putAll(properties);
 	}
 }

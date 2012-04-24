@@ -36,4 +36,9 @@ public abstract class PropertiesHolder {
 	public Map<String, String> getProperties() {
 		return properties;
 	}
+
+	protected void setProperties(Map<String, String> properties) {
+		this.properties.clear();
+		this.properties.putAll(properties);
+	}
 }
