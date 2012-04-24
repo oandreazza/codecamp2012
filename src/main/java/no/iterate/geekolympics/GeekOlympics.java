@@ -6,27 +6,30 @@ import java.util.Collection;
 import no.iterate.graft.Edge;
 import no.iterate.graft.Graft;
 import no.iterate.graft.Node;
-import no.iterate.graft.PropertiesHolder;
 
 public class GeekOlympics {
 
+	private static final String ID = "id";
+	private static final String COMMENT = "comment";
+	
 	private final Graft db = new Graft();
-	private final PropertiesHolder geekUser = new Node("someRandomUser", db);
+	private final Node geekUser = new Node("someRandomUser", db);
 
 	public Event createEvent(String id) {
-		PropertiesHolder node = db.createNode();
-		node.put("id", id);
-		return new Event(node);
+		Node node = db.createNode();
+		node.put(ID, id);
+		
+		return new Event();
 	}
 
 	public Event getEventById(String id) {
-		return new Event(db.getNodeByProperty("id", id));
+		return new Event();
 	}
 
 	public void addComment(String eventId, String message) {
-		Node node = db.getNodeByProperty("id", eventId);
-		Edge comment = db.addEdge(node, geekUser);
-		comment.put("comment", message);
+		Node node = db.getNodeByProperty(ID, eventId);
+		Edge comment = db.createEdge(node, geekUser);
+		comment.put(COMMENT, message);
 	}
 
 	public Collection<String> getComments(String eventId) {
@@ -34,7 +37,7 @@ public class GeekOlympics {
 		Collection<String> commentMessages = new ArrayList<String>(comments.size());
 
 		for (Edge edge : comments) {
-			commentMessages.add(edge.get("comment"));
+			commentMessages.add(edge.get(COMMENT));
 		}
 
 		return commentMessages;

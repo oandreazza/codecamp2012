@@ -10,7 +10,7 @@ import org.junit.Test;
 public class GraftReplicationTest {
 
 	@Test
-	public void shouldReplicateGraft() {
+	public void writesAreReplicated() {
 		// start up two grafts
 		List<Graft> grafts = Graft.getTwoGrafts();
 		Graft first = grafts.get(0);

@@ -12,15 +12,15 @@ public class Node extends PropertiesHolder {
 		addListener(graft);
 	}
 
-	void addEdge(Edge edge) {
-		edges.add(edge);
-	}
-
 	public String getId() {
 		return get("id");
 	}
 
 	public Collection<Edge> getEdges() {
 		return edges;
+	}
+
+	void addEdge(Edge edge) {
+		edges.add(edge);
 	}
 }

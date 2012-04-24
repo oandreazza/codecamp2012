@@ -6,7 +6,7 @@ import java.io.OutputStream;
 
 import org.codehaus.groovy.tools.shell.Groovysh;
 
-class GroovyShellConsole {
+class CommandServer {
 
 	public static void main(String[] args) {
 		startServer()

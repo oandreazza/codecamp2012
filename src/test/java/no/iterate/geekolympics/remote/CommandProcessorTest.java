@@ -1,12 +1,14 @@
-package no.iterate.geekolympics;
+package no.iterate.geekolympics.remote;
 
 import static org.junit.Assert.*;
+
+import no.iterate.geekolympics.remote.CommandProcessor;
 
 import org.junit.Before;
 import org.junit.Test;
 
+public class CommandProcessorTest {
 
-public class TestCommandProcessorTest {
 	private CommandProcessor subject;
 
 	@Before
@@ -15,24 +17,26 @@ public class TestCommandProcessorTest {
 	}
 
 	@Test
-	public void shouldAddComment() throws Exception {
+	public void addComment() throws Exception {
 		subject.process("addEvent eventId");
 		subject.process("addComment eventId comment");
 		String result = subject.process("getComments eventId");
 		assertEquals("comment", result);
 	}
-	
+
 	@Test
-	public void multipleCommentsAreSeparatedByNewlinesFor2Comments() throws Exception {
+	public void multipleCommentsAreSeparatedByNewlinesFor2Comments()
+			throws Exception {
 		subject.process("addEvent eventId");
 		subject.process("addComment eventId comment1");
 		subject.process("addComment eventId comment2");
 		String result = subject.process("getComments eventId");
 		assertEquals("comment1\ncomment2", result);
 	}
-	
+
 	@Test
-	public void multipleCommentsAreSeparatedByNewlinesFor3Comments() throws Exception {
+	public void multipleCommentsAreSeparatedByNewlinesFor3Comments()
+			throws Exception {
 		subject.process("addEvent eventId");
 		subject.process("addComment eventId comment1");
 		subject.process("addComment eventId comment2");
@@ -40,9 +44,9 @@ public class TestCommandProcessorTest {
 		String result = subject.process("getComments eventId");
 		assertEquals("comment1\ncomment2\ncomment3", result);
 	}
-	
+
 	@Test
-	public void shouldAddMultiWordComment() throws Exception {
+	public void addMultiWordComment() throws Exception {
 		subject.process("addEvent eventId");
 		subject.process("addComment eventId multiword comment");
 		String result = subject.process("getComments eventId");

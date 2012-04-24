@@ -11,7 +11,7 @@ import org.junit.Test;
 public class GraftTest {
 
 	@Test
-	public void shouldFindNodeByProperty() {
+	public void findNodeByProperty() {
 		Graft db = new Graft();
 		PropertiesHolder node = db.createNode();
 		node.put("id", "100mDash");
@@ -24,7 +24,7 @@ public class GraftTest {
 	}
 
 	@Test
-	public void tmp_shouldListenForChangesOnItsNodes() {
+	public void listenForChangesOnItsNodes() {
 		Graft db = new Graft();
 		PropertiesHolder node = db.createNode();
 

@@ -1,35 +1,37 @@
-package no.iterate.geekolympics;
+package no.iterate.geekolympics.remote;
 
 import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class CommandProcessor {
-	private static final String REGEX_PATTERN = "addComment (\\w*) ([\\w ]*)";
-	private GeekOlympics geekOlympics = new GeekOlympics();
+import no.iterate.geekolympics.GeekOlympics;
 
+public class CommandProcessor {
+	
+	private final GeekOlympics geekOlympics = new GeekOlympics();
+	private final static Pattern ADD_COMMENT = Pattern.compile("addComment (\\w*) ([\\w ]*)");
+	
 	public String process(String commandLine) {
 		String[] parsed = commandLine.split(" ");
 		String result = "[SYSTEM NOTICE: Your command was processed, lucky you!]";
-
+	
 		String command = parsed[0];
 		if ("addEvent".equals(command)) {
 			String eventID = parsed[1];
 			addEvent(eventID);
 		} else if ("addComment".equals(command)) {
-			Pattern pattern = Pattern.compile(REGEX_PATTERN);
-			Matcher matcher = pattern.matcher(commandLine);
+			Matcher matcher = ADD_COMMENT.matcher(commandLine);
 			
 			matcher.find();
 			String eventId = matcher.group(1);
 			String comment = matcher.group(2);
-
+	
 			addComment(eventId, comment);
 		} else if ("getComments".equals(command)) {
 			String eventId = parsed[1];
 			result = getComments(eventId);
 		}
-
+	
 		return result;
 	}
 
@@ -37,22 +39,13 @@ public class CommandProcessor {
 		StringBuilder result = new StringBuilder();
 		Collection<String> comments = geekOlympics.getComments(eventId);
 
-		boolean isFirst = false;
-		int size = comments.size();
-		int counter = 1;
 		for (String each : comments) {
-			result.append(each);
-			if (!isFirst) {
-				isFirst = true;
-			}
-			
-			if (counter < size) {
+			if (result.length() > 0) {
 				result.append("\n");
 			}
-
-			counter++;
+			result.append(each);
 		}
-
+		
 		return result.toString();
 	}
 

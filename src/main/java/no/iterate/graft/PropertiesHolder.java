@@ -7,8 +7,8 @@ import java.util.Map;
 
 public abstract class PropertiesHolder {
 
-	protected final Map<String, String> properties = new HashMap<String, String>();
-	protected final Collection<NodeListener> listeners = new ArrayList<NodeListener>();
+	private final Map<String, String> properties = new HashMap<String, String>();
+	private final Collection<NodeListener> listeners = new ArrayList<NodeListener>();
 
 	public void put(String property, String value) {
 		properties.put(property, value);
@@ -19,6 +19,10 @@ public abstract class PropertiesHolder {
 		return properties.get(property);
 	}
 
+	public Map<String, String> getProperties() {
+		return properties;
+	}
+
 	protected void addListener(NodeListener myListener) {
 		listeners.add(myListener);
 	}
@@ -27,18 +31,14 @@ public abstract class PropertiesHolder {
 		return listeners;
 	}
 
+	protected void setProperties(Map<String, String> properties) {
+		this.properties.clear();
+		this.properties.putAll(properties);
+	}
+
 	private void notifyListeners() {
 		for (NodeListener each : listeners) {
 			each.update(this);
 		}
-	}
-
-	public Map<String, String> getProperties() {
-		return properties;
-	}
-
-	protected void setProperties(Map<String, String> properties) {
-		this.properties.clear();
-		this.properties.putAll(properties);
 	}
 }
