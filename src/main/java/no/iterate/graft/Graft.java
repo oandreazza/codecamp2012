@@ -1,9 +1,13 @@
 package no.iterate.graft;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import no.iterate.geekolympics.GeekOlympics;
 
 public class Graft implements NodeListener {
 	
@@ -11,6 +15,8 @@ public class Graft implements NodeListener {
 	private final Collection<Node> nodes = new ArrayList<Node>();
 	private final Collection<Edge> edges = new ArrayList<Edge>();
 	private long nextId = 0;
+	
+	private Map<String, Collection<GeekOlympics>> subscriptions= new HashMap<String, Collection<GeekOlympics>>();
 
 	public static List<Graft> getTwoGrafts() {
 		List<Graft> grafts = new ArrayList<Graft>();
@@ -121,6 +127,7 @@ public class Graft implements NodeListener {
 			node = getEdgeById(targetId);
 		}
 		node.setProperties(properties);
+		
 	}
 
 	private void addNodeToReplicas(PropertiesHolder node) {
@@ -131,5 +138,19 @@ public class Graft implements NodeListener {
 
 	private void addNewReplicatedNode(String id) {
 		nodes.add(new Node(id, this));
+	}
+
+	public void subscribe(String eventId, GeekOlympics geekOlympics) {
+		subscriptions.put(eventId, Arrays.asList(geekOlympics));
+	}
+
+	public void notifySubscribers(String eventId, String message, String user) {
+		Collection<GeekOlympics> collection = subscriptions.get(eventId);
+		if (collection == null) return; // Never mind...
+		Node event = getNodeById(eventId);
+		String eventName = event.get("id");
+		for (GeekOlympics each : collection) {
+			each.notifyComment(message, eventName, user);
+		}
 	}
 }

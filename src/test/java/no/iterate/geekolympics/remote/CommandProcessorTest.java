@@ -3,6 +3,7 @@ package no.iterate.geekolympics.remote;
 import static org.junit.Assert.*;
 
 import no.iterate.geekolympics.remote.CommandProcessor;
+import no.iterate.graft.Graft;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -13,7 +14,8 @@ public class CommandProcessorTest {
 
 	@Before
 	public void before() {
-		this.subject = new CommandProcessor();
+		Graft db = new Graft();
+		this.subject = new CommandProcessor(db);
 	}
 
 	@Test
