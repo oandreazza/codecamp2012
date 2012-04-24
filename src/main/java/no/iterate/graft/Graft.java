@@ -75,15 +75,21 @@ public class Graft implements NodeListener {
 	}
 
 	public void subscribe(String eventId, GeekOlympics geekOlympics) {
-		subscriptions.put(eventId, Arrays.asList(geekOlympics));
+		Collection<GeekOlympics> gekGeekOlympics = subscriptions.get(eventId);
+		if (gekGeekOlympics == null) {
+			gekGeekOlympics = new ArrayList<GeekOlympics>();
+			subscriptions.put(eventId, gekGeekOlympics);
+		}
+		gekGeekOlympics.add(geekOlympics);
 	}
 
-	public void notifySubscribers(String eventId, String message, String userName) {
+	public void notifySubscribers(String eventId, String message,
+			String userName) {
 		Collection<GeekOlympics> collection = subscriptions.get(eventId);
 		if (collection == null) {
 			return; // Never mind...
 		}
-	
+
 		String eventName = getNodeById(eventId).get(ID);
 		for (GeekOlympics each : collection) {
 			each.notifyComment(message, eventName, userName);
