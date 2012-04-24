@@ -6,14 +6,15 @@ import java.util.Collection;
 import no.iterate.graft.Edge;
 import no.iterate.graft.Graft;
 import no.iterate.graft.Node;
+import no.iterate.graft.PropertiesHolder;
 
 public class GeekOlympics {
 
 	private final Graft db = new Graft();
-	private final Node geekUser = new Node("someRandomUser", db);
+	private final PropertiesHolder geekUser = new Node("someRandomUser", db);
 
 	public Event createEvent(String id) {
-		Node node = db.createNode();
+		PropertiesHolder node = db.createNode();
 		node.put("id", id);
 		return new Event(node);
 	}

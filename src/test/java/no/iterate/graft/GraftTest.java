@@ -5,7 +5,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import no.iterate.graft.Graft;
-import no.iterate.graft.Node;
 
 import org.junit.Test;
 
@@ -14,11 +13,11 @@ public class GraftTest {
 	@Test
 	public void shouldFindNodeByProperty() {
 		Graft db = new Graft();
-		Node node = db.createNode();
+		PropertiesHolder node = db.createNode();
 		node.put("id", "100mDash");
 		node.put("comment", "this is a cool dash!");
 
-		Node fetched = db.getNodeByProperty("id", "100mDash");
+		PropertiesHolder fetched = db.getNodeByProperty("id", "100mDash");
 
 		assertNotNull(fetched);
 		assertEquals("this is a cool dash!", fetched.get("comment"));
@@ -27,11 +26,11 @@ public class GraftTest {
 	@Test
 	public void tmp_shouldListenForChangesOnItsNodes() {
 		Graft db = new Graft();
-		Node node = db.createNode();
+		PropertiesHolder node = db.createNode();
 
 		final boolean[] updated = {false};
 		NodeListener myListener = new NodeListener() {
-			public void update() {
+			public void update(PropertiesHolder target) {
 				updated[0] = true;
 			}
 		};

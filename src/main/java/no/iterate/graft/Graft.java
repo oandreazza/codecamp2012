@@ -3,6 +3,7 @@ package no.iterate.graft;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public class Graft implements NodeListener {
 	private final List<Graft> replicas = new ArrayList<Graft>();
@@ -10,7 +11,7 @@ public class Graft implements NodeListener {
 	private final Collection<Node> nodes = new ArrayList<Node>();
 	private long nextId = 0;
 
-	public synchronized Node createNode() {
+	public synchronized PropertiesHolder createNode() {
 		Node node = new Node(String.valueOf(nextId++), this);
 		nodes.add(node);
 
@@ -35,10 +36,11 @@ public class Graft implements NodeListener {
 				return each;
 			}
 		}
-		return null;
+		throw new IllegalStateException("Node not found - property: "
+				+ property + " val : " + value);
 	}
 
-	public Edge addEdge(Node node1, Node node2) {
+	public Edge addEdge(Node node1, PropertiesHolder node2) {
 		Edge edge = new Edge();
 		node1.addEdge(edge);
 		return edge;
@@ -70,7 +72,16 @@ public class Graft implements NodeListener {
 		nodes.clear();
 	}
 
-	public void update() {
-		
+	public void update(PropertiesHolder target) {
+		Map<String, String> properties = target.getProperties();
+		for (Graft each : replicas) {
+			each.updateNode(properties);
+		}
+	}
+
+	private void updateNode(Map<String, String> properties) {
+		Node node = getNodeByProperty("id", properties.get("id"));
+
+		node.setProperties(properties);
 	}
 }
