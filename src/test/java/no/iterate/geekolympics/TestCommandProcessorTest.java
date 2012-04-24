@@ -23,12 +23,22 @@ public class TestCommandProcessorTest {
 	}
 	
 	@Test
-	public void multipleCommentsAreSeparatedByNewlines() throws Exception {
+	public void multipleCommentsAreSeparatedByNewlinesFor2Comments() throws Exception {
 		subject.process("addEvent eventId");
 		subject.process("addComment eventId comment1");
 		subject.process("addComment eventId comment2");
 		String result = subject.process("getComments eventId");
 		assertEquals("comment1\ncomment2", result);
+	}
+	
+	@Test
+	public void multipleCommentsAreSeparatedByNewlinesFor3Comments() throws Exception {
+		subject.process("addEvent eventId");
+		subject.process("addComment eventId comment1");
+		subject.process("addComment eventId comment2");
+		subject.process("addComment eventId comment3");
+		String result = subject.process("getComments eventId");
+		assertEquals("comment1\ncomment2\ncomment3", result);
 	}
 	
 	@Test

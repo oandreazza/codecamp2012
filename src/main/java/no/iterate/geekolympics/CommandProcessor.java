@@ -42,12 +42,12 @@ public class CommandProcessor {
 		int counter = 1;
 		for (String each : comments) {
 			result.append(each);
-			if (!isFirst && size != 1) {
+			if (!isFirst) {
 				isFirst = true;
-
-				if (counter < size) {
-					result.append("\n");
-				}
+			}
+			
+			if (counter < size) {
+				result.append("\n");
 			}
 
 			counter++;
