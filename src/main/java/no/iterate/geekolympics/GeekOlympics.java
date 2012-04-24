@@ -15,7 +15,7 @@ public class GeekOlympics {
 	private static final String COMMENT = "comment";
 
 	private Graft db = new Graft();
-	private PropertiesHolder geekUser = new Node("someRandomUser", db);
+	private Node geekUser = new Node("someRandomUser", db);
 	private final Collection<String> notifications = new LinkedList<String>();
 
 	public GeekOlympics(Graft db) {

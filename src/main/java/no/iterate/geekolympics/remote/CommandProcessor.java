@@ -1,8 +1,6 @@
 package no.iterate.geekolympics.remote;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -46,13 +44,13 @@ public class CommandProcessor {
 		return result;
 	}
 
+	public Collection<String> getNotifications() {
+		return geekOlympics.getNotifications();
+	}
+
 	private String login(String username) {
 		geekOlympics.login(username);
 		return "Ok";
-	}
-
-	public Collection<String> getNotifications() {
-		return geekOlympics.getNotifications();
 	}
 
 	private String getComments(String eventId) {
