@@ -10,6 +10,10 @@ public abstract class PropertiesHolder {
 	private final Map<String, String> properties = new HashMap<String, String>();
 	protected final Collection<NodeListener> listeners = new ArrayList<NodeListener>();
 
+	public PropertiesHolder(String id) {
+		put("id", id);
+	}
+
 	public void put(String property, String value) {
 		properties.put(property, value);
 		this.notifyListeners();
@@ -40,5 +44,9 @@ public abstract class PropertiesHolder {
 		for (NodeListener each : listeners) {
 			each.update(this);
 		}
+	}
+
+	public String getId() {
+		return get("id");
 	}
 }

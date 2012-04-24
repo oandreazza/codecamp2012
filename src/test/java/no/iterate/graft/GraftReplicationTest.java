@@ -41,7 +41,7 @@ public class GraftReplicationTest {
 
 		// write some data to first graft
 		Node fromFirst = first.createNode();
-		Node to = first.createNode();
+		PropertiesHolder to = first.createNode();
 		first.createEdge(fromFirst, to);
 
 		first.kill();
@@ -63,7 +63,7 @@ public class GraftReplicationTest {
 
 		// write some data to first graft
 		Node fromFirst = first.createNode();
-		Node to = first.createNode();
+		PropertiesHolder to = first.createNode();
 		Edge firstEdge = first.createEdge(fromFirst, to);
 		firstEdge.put("key", "value");
 
