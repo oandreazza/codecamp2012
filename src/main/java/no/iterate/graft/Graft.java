@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class Graft {
+public class Graft implements NodeListener {
 	private final List<Graft> replicas = new ArrayList<Graft>();
 
 	private final Collection<Node> nodes = new ArrayList<Node>();
+	private long nextId = 0;
 
-	public Node createNode() {
-		Node node = new Node();
+	public synchronized Node createNode() {
+		Node node = new Node(String.valueOf(nextId++), this);
 		nodes.add(node);
 
 		addNodeToReplicas(node);
@@ -20,12 +21,12 @@ public class Graft {
 
 	private void addNodeToReplicas(Node node) {
 		for (Graft replica : replicas) {
-			replica.addReplicatedNode(node);
+			replica.addNewReplicatedNode(node.getId());
 		}
 	}
 
-	private void addReplicatedNode(Node node) {
-		nodes.add(node);
+	private void addNewReplicatedNode(String id) {
+		nodes.add(new Node(id, this));
 	}
 
 	public Node getNodeByProperty(String property, String value) {
@@ -67,5 +68,9 @@ public class Graft {
 
 	public void kill() {
 		nodes.clear();
+	}
+
+	public void update() {
+		
 	}
 }

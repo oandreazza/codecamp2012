@@ -2,6 +2,7 @@ package no.iterate.graft;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 
 import java.util.List;
 
@@ -16,7 +17,6 @@ public class GraftReplicationTest {
 		Graft first = grafts.get(0);
 		Graft second = grafts.get(1);
 		
-		
 		// write some data to first graft
 		Node firstGraftNode = first.createNode();
 		firstGraftNode.put("key", "value");
@@ -26,7 +26,8 @@ public class GraftReplicationTest {
 		first.kill();
 		
 		// check replicated data in second graft
-		Node secondGraftnode = second.getNodeByProperty("key", "value");
-		assertNotNull(secondGraftnode);
+		Node secondGraftNode = second.getNodeByProperty("key", "value");
+		assertNotNull(secondGraftNode);
+		assertNotSame(firstGraftNode, secondGraftNode);
 	}
 }

@@ -10,7 +10,7 @@ import no.iterate.graft.Node;
 public class GeekOlympics {
 
 	private final Graft db = new Graft();
-	private final Node geekUser = new Node();
+	private final Node geekUser = new Node("someRandomUser", db);
 
 	public Event createEvent(String id) {
 		Node node = db.createNode();
