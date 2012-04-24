@@ -4,7 +4,8 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 
-import org.codehaus.groovy.tools.shell.Groovysh;
+import org.codehaus.groovy.tools.shell.Groovysh
+import no.iterate.geekolympics.remote.CommandProcessor;
 
 class CommandServer {
 
@@ -13,7 +14,7 @@ class CommandServer {
 	}
 
 	public static void startServer() {
-		final ServerSocket server = new ServerSocket(RemoteGeekOlympics.CONSOLE_PORT);
+		final ServerSocket server = new ServerSocket(33333);
 		final CommandProcessor commander = new CommandProcessor()
 
 		def serverThread = new Thread() {
