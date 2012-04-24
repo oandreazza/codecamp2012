@@ -6,10 +6,9 @@ public class Edge extends PropertiesHolder {
 	private final Node from;
 
 	public Edge(String id, NodeListener graft, Node from, Node to) {
-		super(id);
+		super(id, graft);
 		this.from = from;
 		this.to = to;
-		addListener(graft);
 	}
 
 	public Node getTo() {

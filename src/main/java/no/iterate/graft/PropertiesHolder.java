@@ -10,8 +10,9 @@ public abstract class PropertiesHolder {
 	private final Map<String, String> properties = new HashMap<String, String>();
 	protected final Collection<NodeListener> listeners = new ArrayList<NodeListener>();
 
-	public PropertiesHolder(String id) {
+	public PropertiesHolder(String id, NodeListener graft) {
 		put("id", id);
+		addListener(graft);
 	}
 
 	public void put(String property, String value) {
