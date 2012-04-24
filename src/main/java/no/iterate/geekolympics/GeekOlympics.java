@@ -1,14 +1,16 @@
 package no.iterate.geekolympics;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
 
+import no.iterate.graft.Edge;
 import no.iterate.graft.Graft;
 import no.iterate.graft.Node;
 
 public class GeekOlympics {
 
 	private final Graft db = new Graft();
+	private final Node geekUser = new Node();
 
 	public Event createEvent(String id) {
 		Node node = db.createNode();
@@ -21,12 +23,20 @@ public class GeekOlympics {
 	}
 
 	public void addComment(String eventId, String message) {
-		db.getNodeByProperty("id", eventId)
-			.put("comment", message);
+		Node node = db.getNodeByProperty("id", eventId);
+		Edge comment = db.addEdge(node, geekUser);
+		comment.put("comment", message);
 	}
 
 	public Collection<String> getComments(String eventId) {
-		return Arrays.asList(db.getNodeByProperty("id", eventId).get("comment"));
+		Collection<Edge> comments = db.getEdgesFrom(eventId);
+		Collection<String> commentMessages = new ArrayList<String>(comments.size());
+
+		for (Edge edge : comments) {
+			commentMessages.add(edge.get("comment"));
+		}
+
+		return commentMessages;
 	}
 
 }

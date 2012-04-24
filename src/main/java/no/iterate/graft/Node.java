@@ -1,18 +1,22 @@
 package no.iterate.graft;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Collection;
 
-public class Node {
+public class Node extends PropertiesHolder {
 
-	private final Map<String, String> properties = new HashMap<String, String>();
+	private final Collection<Edge> edges = new ArrayList<Edge>();
 
-	public void put(String property, String value) {
-		properties.put(property, value);
+	void addEdge(Edge edge) {
+		edges.add(edge);
 	}
 
-	public String get(String property) {
-		return properties.get(property);
+	public String getId() {
+		return get("id");
+	}
+
+	public Collection<Edge> getEdges() {
+		return edges;
 	}
 
 }

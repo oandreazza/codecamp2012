@@ -22,4 +22,16 @@ public class Graft {
 		return null;
 	}
 
+	public Edge addEdge(Node node1, Node node2) {
+		Edge edge = new Edge();
+		node1.addEdge(edge);
+		return edge;
+
+	}
+
+	public Collection<Edge> getEdgesFrom(String nodeId) {
+		Node node = getNodeByProperty("id", nodeId);
+		return node.getEdges();
+	}
+
 }

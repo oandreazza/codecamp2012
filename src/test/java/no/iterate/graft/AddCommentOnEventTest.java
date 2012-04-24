@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Collection;
 
-import no.iterate.geekolympics.Event;
 import no.iterate.geekolympics.GeekOlympics;
 import no.iterate.geekolympics.RemoteGeekOlympics;
 
@@ -25,7 +24,6 @@ public class AddCommentOnEventTest {
 		assertEquals("this is a cool dash!", comments.iterator().next());
 	}
 
-	@Ignore
 	@Test
 	public void shouldAddACommentsOnAnEvent() throws Exception {
 		GeekOlympics server = connectToAServer();
