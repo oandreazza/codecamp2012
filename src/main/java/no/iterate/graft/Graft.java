@@ -51,7 +51,7 @@ public class Graft implements NodeListener {
 	}
 
 	private Edge addEdge(Node node1) {
-		Edge edge = new Edge();
+		Edge edge = new Edge(this);
 		node1.addEdge(edge);
 		return edge;
 	}

@@ -52,4 +52,25 @@ public class GraftReplicationTest {
 
 		// TODO verify the edge has the same properties
 	}
+	
+	
+	@Test
+	public void writesOfEdgesPropertiesAreReplicated() {
+		// start up two grafts
+		List<Graft> grafts = Graft.getTwoGrafts();
+		Graft first = grafts.get(0);
+		Graft second = grafts.get(1);
+
+		// write some data to first graft
+		Node fromFirst = first.createNode();
+		Node to = first.createNode();
+		Edge firstEdge = first.createEdge(fromFirst, to);
+		firstEdge.put("key", "value");
+
+		first.kill();
+
+		Node fromAtSecond = second.getNodeByProperty("id", fromFirst.getId());
+		Collection<Edge> edges = fromAtSecond.getEdges();
+		assertEquals("value", edges.iterator().next().get("key"));
+	}
 }
