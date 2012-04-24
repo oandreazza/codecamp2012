@@ -47,7 +47,7 @@ public class GraftReplicationTest {
 		first.kill();
 
 		Node fromAtSecond = second.getNodeByProperty("id", fromFirst.getId());
-		Collection<Edge> edges = fromAtSecond.getEdges();
+		Collection<Edge> edges = second.getEdgesFrom(fromAtSecond.getId());
 		assertEquals("The edge should have been replicated", 1, edges.size());
 	}
 	
@@ -68,7 +68,7 @@ public class GraftReplicationTest {
 		first.kill();
 
 		Node fromAtSecond = second.getNodeByProperty("id", fromFirst.getId());
-		Collection<Edge> edges = fromAtSecond.getEdges();
+		Collection<Edge> edges = second.getEdgesFrom(fromAtSecond.getId());
 		assertEquals("value", edges.iterator().next().get("key"));
 	}
 }

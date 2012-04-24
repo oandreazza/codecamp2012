@@ -1,7 +1,6 @@
 package no.iterate.graft;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -59,8 +58,12 @@ public class Graft implements NodeListener {
 	}
 
 	public Collection<Edge> getEdgesFrom(String nodeId) {
-		Node node = getNodeById(nodeId);
-		return node.getEdges();
+		Collection<Edge> results = new ArrayList<Edge>();
+		for (Edge each : edges) {
+			if (each.getFrom().getId().equals(nodeId))
+				results.add(each);
+		}
+		return results;
 	}
 
 	public void kill() {
@@ -116,7 +119,6 @@ public class Graft implements NodeListener {
 
 	private Edge addEdgeWithId(String id, Node from, Node to) {
 		Edge edge = new Edge(id, this, from, to);
-		from.addEdge(edge);
 		edges.add(edge);
 		return edge;
 	}
