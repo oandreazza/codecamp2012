@@ -23,4 +23,5 @@ public class Node extends PropertiesHolder {
 	void addEdge(Edge edge) {
 		edges.add(edge);
 	}
+
 }

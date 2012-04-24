@@ -8,7 +8,7 @@ import java.util.Map;
 public abstract class PropertiesHolder {
 
 	private final Map<String, String> properties = new HashMap<String, String>();
-	private final Collection<NodeListener> listeners = new ArrayList<NodeListener>();
+	protected final Collection<NodeListener> listeners = new ArrayList<NodeListener>();
 
 	public void put(String property, String value) {
 		properties.put(property, value);
@@ -36,7 +36,7 @@ public abstract class PropertiesHolder {
 		this.properties.putAll(properties);
 	}
 
-	private void notifyListeners() {
+	void notifyListeners() {
 		for (NodeListener each : listeners) {
 			each.update(this);
 		}

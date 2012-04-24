@@ -1,8 +1,10 @@
 package no.iterate.graft;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.junit.Test;
@@ -28,5 +30,26 @@ public class GraftReplicationTest {
 		PropertiesHolder secondGraftNode = second.getNodeByProperty("key", "value");
 		assertNotNull(secondGraftNode);
 		assertNotSame(firstGraftNode, secondGraftNode);
+	}
+
+	@Test
+	public void writesOfEdgesAreReplicated() {
+		// start up two grafts
+		List<Graft> grafts = Graft.getTwoGrafts();
+		Graft first = grafts.get(0);
+		Graft second = grafts.get(1);
+
+		// write some data to first graft
+		Node fromFirst = first.createNode();
+		Node to = first.createNode();
+		first.createEdge(fromFirst, to);
+
+		first.kill();
+
+		Node fromAtSecond = second.getNodeByProperty("id", fromFirst.getId());
+		Collection<Edge> edges = fromAtSecond.getEdges();
+		assertEquals("The edge should have been replicated", 1, edges.size());
+
+		// TODO verify the edge has the same properties
 	}
 }

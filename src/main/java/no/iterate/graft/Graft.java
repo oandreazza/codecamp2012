@@ -43,14 +43,32 @@ public class Graft implements NodeListener {
 	}
 
 	public Edge createEdge(Node node1, Node node2) {
+		Edge edge = addEdge(node1);
+		for (Graft replica : replicas) {
+			replica.addReplicaEdge(node1.getId(), node2.getId());
+		}
+		return edge;
+	}
+
+	private Edge addEdge(Node node1) {
 		Edge edge = new Edge();
 		node1.addEdge(edge);
 		return edge;
 	}
 
+	private void addReplicaEdge(String fromId, String toId) {
+		Node from = getNodeById(fromId);
+		Node to = getNodeById(toId);
+		Edge edge = addEdge(from);
+	}
+
 	public Collection<Edge> getEdgesFrom(String nodeId) {
-		Node node = getNodeByProperty("id", nodeId);
+		Node node = getNodeById(nodeId);
 		return node.getEdges();
+	}
+
+	private Node getNodeById(String nodeId) {
+		return getNodeByProperty("id", nodeId);
 	}
 
 	public void kill() {
@@ -69,7 +87,7 @@ public class Graft implements NodeListener {
 	}
 
 	private void updateNode(Map<String, String> properties) {
-		PropertiesHolder node = getNodeByProperty("id", properties.get("id"));
+		PropertiesHolder node = getNodeById(properties.get("id"));
 		node.setProperties(properties);
 	}
 
