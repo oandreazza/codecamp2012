@@ -6,10 +6,11 @@ import java.util.LinkedList;
 
 import no.iterate.graft.Edge;
 import no.iterate.graft.Graft;
+import no.iterate.graft.IGraftSubscriber;
 import no.iterate.graft.Node;
 import no.iterate.graft.PropertiesHolder;
 
-public class GeekOlympics {
+public class GeekOlympics implements IGraftSubscriber {
 
 	private static final String ID = "id";
 	private static final String COMMENT = "comment";

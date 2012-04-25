@@ -2,6 +2,7 @@ package no.iterate.graft;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 
 public class GraftStorage {
 	final Collection<Node> nodes = new ArrayList<Node>();
@@ -67,5 +68,31 @@ public class GraftStorage {
 		Node node = new Node(generateId(), graft);
 		nodes.add(node);
 		return node;
+	}
+
+	void updateNode(Map<String, String> properties) {
+		String targetId = properties.get(Graft.ID);
+		PropertiesHolder node;
+		try {
+			node = getNodeById(targetId);
+		} catch (IllegalStateException e) {
+			node = getEdgeById(targetId);
+		}
+		node.setProperties(properties);
+
+	}
+
+	void addReplicaEdge(Edge edge, Graft graft) {
+		Node from = edge.getFrom();
+		Node to = edge.getTo();
+		addEdgeWithId(edge.getId(), graft, from, to);
+	}
+
+	void addReplicaNode(Node node, Graft graft) {
+		nodes.add(new Node(node.getId(), graft));
+	}
+
+	void kill() {
+		nodes.clear();
 	}
 }

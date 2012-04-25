@@ -1,16 +1,17 @@
 package no.iterate.graft;
 
-import java.util.*;
-
-import no.iterate.geekolympics.GeekOlympics;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 public class Graft implements NodeListener {
 
 	static final String ID = "id";
 	private final List<Graft> replicas = new ArrayList<Graft>();
 
-	private Map<String, Collection<GeekOlympics>> subscriptions = new HashMap<String, Collection<GeekOlympics>>();
 	private final GraftStorage graftStorage = new GraftStorage();
+	private final GraftSubscriptions graftSubscriptions = new GraftSubscriptions();
 
 	public static List<Graft> getTwoGrafts() {
 		List<Graft> grafts = new ArrayList<Graft>();
@@ -26,21 +27,19 @@ public class Graft implements NodeListener {
 
 	public synchronized Node createNode() {
 		Node node = graftStorage.addNode(this);
-		addNodeToReplicas(node);
+		propagateNode(node);
 
 		return node;
 	}
 
-	public Node getNodeByProperty(String property, String value) {
-		return graftStorage.getNodeByProperty(property, value);
-	}
-
 	public Edge createEdge(Node from, Node to) {
 		Edge edge = graftStorage.addEdge(this, from, to);
-		for (Graft replica : replicas) {
-			replica.addReplicaEdge(edge.getId(), from.getId(), to.getId());
-		}
+		propagateEdge(edge);
 		return edge;
+	}
+
+	public Node getNodeByProperty(String property, String value) {
+		return graftStorage.getNodeByProperty(property, value);
 	}
 
 	public Collection<Edge> getEdgesFrom(String nodeId) {
@@ -48,67 +47,47 @@ public class Graft implements NodeListener {
 	}
 
 	public void kill() {
-		graftStorage.nodes.clear();
+		graftStorage.kill();
+	}
+
+	public void subscribe(Node node, IGraftSubscriber subscriber) {
+		graftSubscriptions.subscribe(node, subscriber);
+	}
+
+	public void notifySubscribers(Edge target) {
+		graftSubscriptions.notifySubscribers(target);
+	}
+
+
+	private void propagateEdge(Edge edge) {
+		for (Graft replica : replicas) {
+			replica.applyPropagatedEdge(edge);
+		}
+	}
+
+	private void applyPropagatedEdge(Edge edge) {
+		graftStorage.addReplicaEdge(edge, this);
+	}
+
+	private void propagateNode(Node node) {
+		for (Graft replica : replicas) {
+			replica.applyPropagatedNode(node);
+		}
+	}
+
+	private void applyPropagatedNode(Node node) {
+		graftStorage.addReplicaNode(node, this);
 	}
 
 	public void update(PropertiesHolder target) {
 		Map<String, String> properties = target.getProperties();
 		for (Graft each : replicas) {
-			each.updateNode(properties);
+			each.graftStorage.updateNode(properties);
 		}
-	}
-
-	public void subscribe(Node node, GeekOlympics geekOlympics) {
-		Collection<GeekOlympics> gekGeekOlympics = subscriptions.get(node.getId());
-		if (gekGeekOlympics == null) {
-			gekGeekOlympics = new HashSet<GeekOlympics> ();
-			subscriptions.put(node.getId(), gekGeekOlympics);
-		}
-		gekGeekOlympics.add(geekOlympics);
-	}
-
-	public void notifySubscribers(Edge target) {
-		String eventId = target.getFrom().getId();
-		Collection<GeekOlympics> collection = subscriptions.get(eventId);
-		if (collection == null) {
-			return; // Never mind...
-		}
-
-		String eventName = eventId;
-		for (GeekOlympics each : collection) {
-			each.notifyComment(target);
-		}
-	}
-
-	private void addReplicaEdge(String edgeId, String fromId, String toId) {
-		Node from = graftStorage.getNodeById(fromId);
-		Node to = graftStorage.getNodeById(toId);
-		graftStorage.addEdgeWithId(edgeId, this, from, to);
 	}
 
 	private void addReplica(Graft graft) {
 		replicas.add(graft);
 	}
 
-	private void updateNode(Map<String, String> properties) {
-		String targetId = properties.get(ID);
-		PropertiesHolder node;
-		try {
-			node = graftStorage.getNodeById(targetId);
-		} catch (IllegalStateException e) {
-			node = graftStorage.getEdgeById(targetId);
-		}
-		node.setProperties(properties);
-
-	}
-
-	private void addNodeToReplicas(PropertiesHolder node) {
-		for (Graft replica : replicas) {
-			replica.addNewReplicatedNode(node.getId());
-		}
-	}
-
-	private void addNewReplicatedNode(String id) {
-		graftStorage.nodes.add(new Node(id, this));
-	}
 }
