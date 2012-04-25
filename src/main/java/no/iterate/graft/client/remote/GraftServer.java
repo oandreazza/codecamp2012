@@ -1,5 +1,8 @@
 package no.iterate.graft.client.remote;
 
+import no.iterate.graft.Graft;
+import no.iterate.graft.Node;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -12,6 +15,7 @@ public class GraftServer implements Runnable {
 
 	private static final String SHUTDOWN_COMMAND = "shutdown";
 	private final int port;
+	private Graft db = new Graft();
 
 	public GraftServer(int port) {
 		this.port = port;
@@ -51,12 +55,16 @@ public class GraftServer implements Runnable {
 
 				message = (String) reader.readLine();
 				if ("createNode".equals(message)) {
-					String nodeId = "10";
+					Node node = db.createNode();
+					String nodeId = node.getId();
+
 					writer.write(nodeId);
 					writer.newLine();
 					writer.flush();
 				} else if (message.startsWith("getNodeById")) {
-					writer.write("10");
+					String[] parsedMessage = message.split(" ");
+					Node node = db.getNodeByProperty("id", parsedMessage[1]);
+					writer.write(node.getId());
 					writer.newLine();
 					writer.flush();
 				}
