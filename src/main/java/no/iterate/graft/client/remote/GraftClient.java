@@ -28,14 +28,7 @@ public class GraftClient {
 	}
 
 	public Node createNode() throws IOException {
-		try {
-			writer.write("createNode");
-			writer.newLine();
-			writer.flush();
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		sendToServer(GraftServer.CREATE_NODE_COMMAND);
 		
 		String id = reader.readLine();
 		System.out.println("[client] Created node id> " + id);
@@ -43,35 +36,31 @@ public class GraftClient {
 	}
 
 	public void kill() {
-		try {
-			writer.write("shutdown");
-			writer.newLine();
-			writer.flush();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		sendToServer(GraftServer.SHUTDOWN_COMMAND);
 	}
 
 	public Node getNodeById(String id) throws IOException {
-		try {
-			writer.write("getNodeById " + id);
-			writer.newLine();
-			writer.flush();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+			sendToServer(GraftServer.GET_NODE_BY_ID_COMMAND + " " + id);
 
 		String nodeString = reader.readLine();
 		System.out.println("[client] getNodeById> " + nodeString);
-		//parse the string
 		Node recievedNode = createFromString(nodeString);
 
 		return recievedNode;
 	}
 
+	private void sendToServer(String command) {
+		try {
+			writer.write(command);
+			writer.newLine();
+			writer.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	private Node createFromString(String id) {
 		Node receivedNode = new Node(id, null);
-
 		return receivedNode;
 	}
 

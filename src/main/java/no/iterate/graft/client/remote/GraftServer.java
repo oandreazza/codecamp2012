@@ -15,92 +15,23 @@ import no.iterate.graft.Node;
 
 public class GraftServer implements Runnable {
 
-	private static final String SHUTDOWN_COMMAND = "shutdown";
+	public static final String GET_NODE_BY_ID_COMMAND = "getNodeById";
+	public static final String CREATE_NODE_COMMAND = "createNode";
+	public static final String SHUTDOWN_COMMAND = "shutdown";
 	private final int port;
-	private List<GraftServer> replicas = new LinkedList<GraftServer>();
-	private final Graft db;
+	private final List<GraftServer> replicas = new LinkedList<GraftServer>();
+	private final Graft db = new Graft();
 
-	public GraftServer(int port, Graft db) {
+	private GraftServer(int port) {
 		this.port = port;
-		this.db = db;
 	}
 
 	public static GraftServer start(int port) throws IOException,
 			ClassNotFoundException, InterruptedException {
-		Graft db = new Graft();
-
-		GraftServer server = new GraftServer(port, db);
+		GraftServer server = new GraftServer(port);
 		new Thread(server).start();
 
 		return server;
-	}
-
-	@Override
-	public void run() {
-		String message = "";
-		BufferedReader reader = null;
-		BufferedWriter writer = null;
-
-		Socket serverSocket = null;
-		ServerSocket socket = null;
-		try {
-			socket = new ServerSocket(port);
-			serverSocket = socket.accept();
-
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-
-		do {
-			try {
-				if (serverSocket.isClosed()) {
-					serverSocket = socket.accept();
-				}
-				
-				reader = new BufferedReader(new InputStreamReader(
-						serverSocket.getInputStream()));
-				writer = new BufferedWriter(new OutputStreamWriter(
-						serverSocket.getOutputStream()));
-
-				message = (String) reader.readLine();
-
-				if (message == null) {
-					serverSocket.close();
-				} else {
-
-					System.out.println("[server" + port + "] Received> "
-							+ message);
-
-					if ("createNode".equals(message)) {
-						Node node = db.createNode();
-						String nodeId = node.getId();
-
-						writer.write(nodeId);
-						writer.newLine();
-						writer.flush();
-
-						addNodeToReplicas();
-					} else if (message.startsWith("getNodeById")) {
-						String[] parsedMessage = message.split(" ");
-						Node node = db
-								.getNodeByProperty("id", parsedMessage[1]);
-						writer.write(node.getId());
-						writer.newLine();
-						writer.flush();
-					}
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		} while (!SHUTDOWN_COMMAND.equals(message));
-
-		try {
-			reader.close();
-			writer.close();
-			socket.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 
 	public static void main(String[] args) throws IOException,
@@ -108,8 +39,77 @@ public class GraftServer implements Runnable {
 		GraftServer.start(9999);
 	}
 
+	@Override
+	public void run() {
+		ServerSocket socket = null;
+		Socket connection = null;
+		BufferedReader reader = null;
+		BufferedWriter writer = null;
+
+		try {
+			socket = new ServerSocket(port);
+			connection = socket.accept();
+
+			String message = "";
+			do {
+				if (connection.isClosed()) {
+					connection = socket.accept();
+				}
+
+				reader = new BufferedReader(new InputStreamReader(
+						connection.getInputStream()));
+				writer = new BufferedWriter(new OutputStreamWriter(
+						connection.getOutputStream()));
+
+				message = (String) reader.readLine();
+				if (message == null) {
+					connection.close();
+				} else {
+					System.out.println("[server" + port + "] Received> "
+							+ message);
+
+					if (CREATE_NODE_COMMAND.equals(message)) {
+						Node node = db.createNode();
+						String nodeId = node.getId();
+						sendResponse(writer, nodeId);
+
+						addNodeToReplicas();
+					} else if (message.startsWith(GET_NODE_BY_ID_COMMAND)) {
+						String[] parsedMessage = message.split(" ");
+						Node node = db
+								.getNodeByProperty("id", parsedMessage[1]);
+						sendResponse(writer, node.getId());
+					}
+				}
+			} while (!SHUTDOWN_COMMAND.equals(message));
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				reader.close();
+				writer.close();
+				connection.close();
+				socket.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
 	public int getPortNumber() {
 		return port;
+	}
+
+	public void addReplica(GraftServer server) {
+		replicas.add(server);
+	}
+
+	private void sendResponse(BufferedWriter writer, String message)
+			throws IOException {
+		writer.write(message);
+		writer.newLine();
+		writer.flush();
 	}
 
 	private void addNodeToReplicas() throws IOException {
@@ -120,15 +120,9 @@ public class GraftServer implements Runnable {
 			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
 					socket.getOutputStream()));
 
-			writer.write("createNode");
-			writer.newLine();
-			writer.flush();
+			sendResponse(writer, CREATE_NODE_COMMAND);
 			socket.close();
 		}
-	}
-
-	public void addReplica(GraftServer server) {
-		replicas.add(server);
 	}
 
 }
