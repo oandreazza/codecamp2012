@@ -8,10 +8,10 @@ import java.util.Map;
 public class Graft implements NodeListener {
 
 	static final String ID = "id";
-	private final List<Graft> replicas = new ArrayList<Graft>();
 
 	private final GraftStorage graftStorage = new GraftStorage();
 	private final GraftSubscriptions graftSubscriptions = new GraftSubscriptions();
+	private final GraftReplicator graftReplicator = new GraftReplicator();
 
 	public static List<Graft> getTwoGrafts() {
 		List<Graft> grafts = new ArrayList<Graft>();
@@ -25,18 +25,19 @@ public class Graft implements NodeListener {
 		return grafts;
 	}
 
-	public synchronized Node createNode() {
+	public Node createNode() {
 		Node node = graftStorage.addNode(this);
-		propagateNode(node);
-
+		graftReplicator.propagateNode(node);
 		return node;
 	}
 
 	public Edge createEdge(Node from, Node to) {
 		Edge edge = graftStorage.addEdge(this, from, to);
-		propagateEdge(edge);
+		graftReplicator.propagateEdge(edge);
 		return edge;
 	}
+
+	// ########################################################################## QUERIES
 
 	public Node getNodeByProperty(String property, String value) {
 		return graftStorage.getNodeByProperty(property, value);
@@ -50,6 +51,31 @@ public class Graft implements NodeListener {
 		graftStorage.kill();
 	}
 
+	// ########################################################################## REPLICATION
+
+	void applyPropagatedEdge(Edge edge) {
+		graftStorage.addReplicaEdge(edge, this);
+	}
+
+	void applyPropagatedNode(Node node) {
+		graftStorage.addReplicaNode(node, this);
+	}
+
+	void applyPropagatedProperties(Map<String, String> properties) {
+		graftStorage.updateNode(properties);
+	}
+
+	@Override
+	public void update(PropertiesHolder target) {
+		graftReplicator.propagateProperties(target);
+	}
+
+	private void addReplica(Graft graft) {
+		graftReplicator.addReplica(graft);
+	}
+
+	// ########################################################################## SUBSCRIPTIONS
+
 	public void subscribe(Node node, IGraftSubscriber subscriber) {
 		graftSubscriptions.subscribe(node, subscriber);
 	}
@@ -57,37 +83,4 @@ public class Graft implements NodeListener {
 	public void notifySubscribers(Edge target) {
 		graftSubscriptions.notifySubscribers(target);
 	}
-
-
-	private void propagateEdge(Edge edge) {
-		for (Graft replica : replicas) {
-			replica.applyPropagatedEdge(edge);
-		}
-	}
-
-	private void applyPropagatedEdge(Edge edge) {
-		graftStorage.addReplicaEdge(edge, this);
-	}
-
-	private void propagateNode(Node node) {
-		for (Graft replica : replicas) {
-			replica.applyPropagatedNode(node);
-		}
-	}
-
-	private void applyPropagatedNode(Node node) {
-		graftStorage.addReplicaNode(node, this);
-	}
-
-	public void update(PropertiesHolder target) {
-		Map<String, String> properties = target.getProperties();
-		for (Graft each : replicas) {
-			each.graftStorage.updateNode(properties);
-		}
-	}
-
-	private void addReplica(Graft graft) {
-		replicas.add(graft);
-	}
-
 }
