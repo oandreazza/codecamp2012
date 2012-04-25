@@ -63,7 +63,7 @@ public class GeekOlympics implements IGraftSubscriber {
 		//todo: lookup user with given name
 	}
 
-	public void notifyComment(Edge target) {
+	public void notify(Edge target) {
 		notifications.add(target.getTo().getId() + ": commented on " + target.getFrom().getId() + " " + target.get("comment"));
 	}
 

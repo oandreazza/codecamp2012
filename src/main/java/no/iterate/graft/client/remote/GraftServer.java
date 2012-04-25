@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -112,16 +113,20 @@ public class GraftServer implements Runnable {
 		writer.flush();
 	}
 
-	private void addNodeToReplicas() throws IOException {
+	private void addNodeToReplicas() {
 		for (GraftServer each : replicas) {
 			Socket socket = null;
-			socket = new Socket("localhost", each.getPortNumber());
-
-			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
-					socket.getOutputStream()));
-
-			sendResponse(writer, CREATE_NODE_COMMAND);
-			socket.close();
+			try {
+				socket = new Socket("localhost", each.getPortNumber());
+				BufferedWriter writer = new BufferedWriter(
+						new OutputStreamWriter(socket.getOutputStream()));
+				sendResponse(writer, CREATE_NODE_COMMAND);
+				socket.close();
+			} catch (UnknownHostException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

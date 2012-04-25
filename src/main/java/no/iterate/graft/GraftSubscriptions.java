@@ -25,7 +25,7 @@ public class GraftSubscriptions {
 		}
 
 		for (IGraftSubscriber each : collection) {
-			each.notifyComment(target);
+			each.notify(target);
 		}
 	}
 }
