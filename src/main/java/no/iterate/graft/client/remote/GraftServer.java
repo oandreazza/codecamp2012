@@ -55,6 +55,10 @@ public class GraftServer implements Runnable {
 					writer.write(nodeId);
 					writer.newLine();
 					writer.flush();
+				} else if (message.startsWith("getNodeById")) {
+					writer.write("10");
+					writer.newLine();
+					writer.flush();
 				}
 			} catch (IOException e) {
 				e.printStackTrace();

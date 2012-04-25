@@ -8,7 +8,7 @@ import org.junit.Test;
 public class GraftReplicationRemoteTest {
 
 	@Test
-	public void replicateDatatOverSocket() throws Exception {
+	public void replicateDataOverSocket() throws Exception {
 		GraftClient client = new GraftClient();
 		GraftServer first = GraftServer.start(1234);
 		GraftServer second = GraftServer.start(1235);
@@ -17,7 +17,7 @@ public class GraftReplicationRemoteTest {
 		client.kill();
 		client.connectTo(second);
 		Node fetched = client.getNodeById(created.getId());
-		assertEquals("value", fetched.get("key"));
+		assertEquals(created.get("id"), fetched.get("id"));
 	}
 
 }

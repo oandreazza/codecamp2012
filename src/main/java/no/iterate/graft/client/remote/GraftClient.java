@@ -52,9 +52,27 @@ public class GraftClient {
 		}
 	}
 
-	public Node getNodeById(String id) {
-		// TODO Auto-generated method stub
-		return null;
+	public Node getNodeById(String id) throws IOException {
+		try {
+			writer.write("getNodeById " + id);
+			writer.newLine();
+			writer.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		String nodeString = reader.readLine();
+		System.out.println("[client] getNodeById> " + nodeString);
+		//parse the string
+		Node recievedNode = createFromString(nodeString);
+
+		return recievedNode;
+	}
+
+	private Node createFromString(String id) {
+		Node receivedNode = new Node(id, null);
+
+		return receivedNode;
 	}
 
 }
