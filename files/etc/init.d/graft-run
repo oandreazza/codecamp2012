@@ -1,0 +1,3 @@
+#!/bin/sh
+/usr/bin/nohup /usr/bin/java -jar /opt/graft.jar &> /var/log/graft.out &
+echo $!

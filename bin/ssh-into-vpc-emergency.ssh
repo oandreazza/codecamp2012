@@ -1,0 +1,1 @@
+ssh -o StrictHostKeyChecking=no -i .aws/StarClusterCodeCamp12-key.pem ec2-user@46.51.196.99

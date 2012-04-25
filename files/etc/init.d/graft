@@ -1,0 +1,61 @@
+#!/bin/bash
+# graft        Init script for running the graft client daemon
+#
+# Author:       Duane Griffin <d.griffin@psenterprise.com>
+#               David Lutterkort <dlutter@redhat.com>
+#
+# chkconfig: - 98 02
+#
+# description: Enables periodic system configuration checks through puppet.
+# processname: graft
+# config: /etc/sysconfig/graft
+
+PATH=/usr/bin:/sbin:/bin:/usr/sbin
+export PATH
+
+[ -f /etc/sysconfig/graft ] && . /etc/sysconfig/graft
+lockfile=${LOCKFILE-/var/lock/subsys/graft}
+pidfile=${PIDFILE-/var/run/graft/agent.pid}
+RETVAL=0
+HERE=$(dirname $0)
+
+[ -d /var/run/graft ] || mkdir -p /var/run/graft
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+start() {
+    echo -n $"Starting graft: "
+    RETVAL=$?
+    PID=$($HERE/graft-run)
+    echo $PID > $pidfile
+    echo
+        [ $RETVAL = 0 ] && touch ${lockfile}
+        return $RETVAL
+}
+
+stop() {
+    echo -n $"Stopping graft: "
+    killproc -p $pidfile
+    RETVAL=$?
+    echo
+    [ $RETVAL = 0 ] && rm -f ${lockfile} ${pidfile}
+}
+
+case "$1" in
+    start)
+        start
+    ;;
+    stop)
+        stop
+    ;;
+    restart)
+        stop
+	start
+    ;;
+    *)
+        echo $"Usage: $0 {start|stop|restart}"
+        exit 1
+esac
+
+exit $RETVAL
