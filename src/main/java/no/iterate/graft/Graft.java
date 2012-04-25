@@ -6,13 +6,11 @@ import no.iterate.geekolympics.GeekOlympics;
 
 public class Graft implements NodeListener {
 
-	private static final String ID = "id";
+	static final String ID = "id";
 	private final List<Graft> replicas = new ArrayList<Graft>();
-	private final Collection<Node> nodes = new ArrayList<Node>();
-	private final Collection<Edge> edges = new ArrayList<Edge>();
-	private long nextId = 0;
 
 	private Map<String, Collection<GeekOlympics>> subscriptions = new HashMap<String, Collection<GeekOlympics>>();
+	private final GraftStorage graftStorage = new GraftStorage();
 
 	public static List<Graft> getTwoGrafts() {
 		List<Graft> grafts = new ArrayList<Graft>();
@@ -27,26 +25,18 @@ public class Graft implements NodeListener {
 	}
 
 	public synchronized Node createNode() {
-		Node node = new Node(generateId(), this);
-		nodes.add(node);
-
+		Node node = graftStorage.addNode(this);
 		addNodeToReplicas(node);
 
 		return node;
 	}
 
 	public Node getNodeByProperty(String property, String value) {
-		for (Node each : nodes) {
-			if (value.equals(each.get(property))) {
-				return each;
-			}
-		}
-		throw new IllegalStateException("Node not found - property: "
-				+ property + " val : " + value);
+		return graftStorage.getNodeByProperty(property, value);
 	}
 
 	public Edge createEdge(Node from, Node to) {
-		Edge edge = addEdge(from, to);
+		Edge edge = graftStorage.addEdge(this, from, to);
 		for (Graft replica : replicas) {
 			replica.addReplicaEdge(edge.getId(), from.getId(), to.getId());
 		}
@@ -54,16 +44,11 @@ public class Graft implements NodeListener {
 	}
 
 	public Collection<Edge> getEdgesFrom(String nodeId) {
-		Collection<Edge> results = new ArrayList<Edge>();
-		for (Edge each : edges) {
-			if (each.getFrom().getId().equals(nodeId))
-				results.add(each);
-		}
-		return results;
+		return graftStorage.getEdgesFrom(nodeId);
 	}
 
 	public void kill() {
-		nodes.clear();
+		graftStorage.nodes.clear();
 	}
 
 	public void update(PropertiesHolder target) {
@@ -89,52 +74,16 @@ public class Graft implements NodeListener {
 			return; // Never mind...
 		}
 
-		String eventName = getNodeById(eventId).get(ID);
+		String eventName = graftStorage.getNodeById(eventId).get(ID);
 		for (GeekOlympics each : collection) {
 			each.notifyComment(message, eventName, userName);
 		}
 	}
 
-	private Edge getEdgeByProperty(String property, String value) {
-		for (Edge each : edges) {
-			if (value.equals(each.get(property))) {
-				return each;
-			}
-		}
-		throw new IllegalStateException("Edge not found - property: "
-				+ property + " val : " + value);
-	}
-
-	private String generateId() {
-		return String.valueOf(nextId++);
-	}
-
-	private Edge addEdge(Node from, Node to) {
-		return addEdgeWithId(generateId(), from, to);
-	}
-
-	private Edge addEdgeWithId(String id, Node from, Node to) {
-		Edge edge = new Edge(id, this, from, to);
-		edges.add(edge);
-		return edge;
-	}
-
 	private void addReplicaEdge(String edgeId, String fromId, String toId) {
-		Node from = getNodeById(fromId);
-		Node to = getNodeById(toId);
-		addEdgeWithId(edgeId, from, to);
-	}
-
-	private Node getNodeById(String nodeId) {
-		if (nodeId == null)
-			throw new IllegalArgumentException("id required");
-		return getNodeByProperty(ID, nodeId);
-	}
-
-	private Edge getEdgeById(String nodeId) {
-		if (nodeId == null)
-			throw new IllegalArgumentException("id required");
-		return getEdgeByProperty(ID, nodeId);
+		Node from = graftStorage.getNodeById(fromId);
+		Node to = graftStorage.getNodeById(toId);
+		graftStorage.addEdgeWithId(edgeId, this, from, to);
 	}
 
 	private void addReplica(Graft graft) {
@@ -145,9 +94,9 @@ public class Graft implements NodeListener {
 		String targetId = properties.get(ID);
 		PropertiesHolder node;
 		try {
-			node = getNodeById(targetId);
+			node = graftStorage.getNodeById(targetId);
 		} catch (IllegalStateException e) {
-			node = getEdgeById(targetId);
+			node = graftStorage.getEdgeById(targetId);
 		}
 		node.setProperties(properties);
 
@@ -160,6 +109,6 @@ public class Graft implements NodeListener {
 	}
 
 	private void addNewReplicatedNode(String id) {
-		nodes.add(new Node(id, this));
+		graftStorage.nodes.add(new Node(id, this));
 	}
 }
