@@ -12,6 +12,7 @@ public class GraftReplicationRemoteTest {
 		GraftClient client = new GraftClient();
 		GraftServer first = GraftServer.start(1234);
 		GraftServer second = GraftServer.start(1235);
+		first.addReplica(second);
 		client.connectTo(first);
 		Node created = client.createNode();
 		client.kill();
