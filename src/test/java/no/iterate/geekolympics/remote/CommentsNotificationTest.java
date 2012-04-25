@@ -49,4 +49,21 @@ public class CommentsNotificationTest {
 		assertEquals(1, user2.getNotifications().size());
 	}
 
+	@Test
+	public void subscribersAreOnlyAddedOnce() throws Exception {
+		Graft db = new Graft();
+		CommandProcessor user1 = new CommandProcessor(db);
+		user1.process("addEvent 100mDash");
+		user1.process("login user1");
+		user1.process("addComment 100mDash whatever");
+		user1.process("addComment 100mDash whatever2");
+		CommandProcessor user2 = new CommandProcessor(db);
+		user2.process("login user2");
+		user2.process("addComment 100mDash dude");
+
+		Collection<String> notifications = user1.getNotifications();
+		
+		assertEquals(2, notifications.size());
+	}
+
 }

@@ -1,10 +1,6 @@
 package no.iterate.graft;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import no.iterate.geekolympics.GeekOlympics;
 
@@ -80,7 +76,7 @@ public class Graft implements NodeListener {
 	public void subscribe(String eventId, GeekOlympics geekOlympics) {
 		Collection<GeekOlympics> gekGeekOlympics = subscriptions.get(eventId);
 		if (gekGeekOlympics == null) {
-			gekGeekOlympics = new ArrayList<GeekOlympics>();
+			gekGeekOlympics = new HashSet<GeekOlympics> ();
 			subscriptions.put(eventId, gekGeekOlympics);
 		}
 		gekGeekOlympics.add(geekOlympics);

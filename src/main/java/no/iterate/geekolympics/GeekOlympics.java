@@ -59,6 +59,7 @@ public class GeekOlympics {
 
 	public void login(String username) {
 		geekUser = new Node(username, db);
+		//todo: lookup user with given name
 	}
 
 	public void notifyComment(String message, String eventName, String user) {
