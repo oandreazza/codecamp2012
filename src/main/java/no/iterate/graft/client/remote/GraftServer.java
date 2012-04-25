@@ -30,9 +30,7 @@ public class GraftServer implements Runnable {
 		Graft db = new Graft();
 
 		GraftServer server = new GraftServer(port, db);
-		GraftServer replica = new GraftServer(port + 10, db);
 		new Thread(server).start();
-		new Thread(replica).start();
 
 		return server;
 	}
@@ -48,20 +46,31 @@ public class GraftServer implements Runnable {
 		try {
 			socket = new ServerSocket(port);
 			serverSocket = socket.accept();
+
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
 
 		do {
 			try {
+				if (serverSocket.isClosed()) {
+					serverSocket = socket.accept();
+				}
+				
 				reader = new BufferedReader(new InputStreamReader(
 						serverSocket.getInputStream()));
 				writer = new BufferedWriter(new OutputStreamWriter(
 						serverSocket.getOutputStream()));
 
 				message = (String) reader.readLine();
-				System.out.println("[server" + port + "] Received> " + message);
-				if (message != null) {
+
+				if (message == null) {
+					serverSocket.close();
+				} else {
+
+					System.out.println("[server" + port + "] Received> "
+							+ message);
+
 					if ("createNode".equals(message)) {
 						Node node = db.createNode();
 						String nodeId = node.getId();
@@ -88,7 +97,7 @@ public class GraftServer implements Runnable {
 		try {
 			reader.close();
 			writer.close();
-			serverSocket.close();
+			socket.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -106,7 +115,7 @@ public class GraftServer implements Runnable {
 	private void addNodeToReplicas() throws IOException {
 		for (GraftServer each : replicas) {
 			Socket socket = null;
-			socket = new Socket("localhost", each.getPortNumber() + 10);
+			socket = new Socket("localhost", each.getPortNumber());
 
 			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
 					socket.getOutputStream()));
