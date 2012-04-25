@@ -41,8 +41,8 @@ public class GeekOlympics {
 		Node node = db.getNodeByProperty(ID, eventId);
 		Edge comment = db.createEdge(node, geekUser);
 		comment.put(COMMENT, message);
-		db.notifySubscribers(eventId, message, geekUser.getId());
-		db.subscribe(eventId, this);
+		db.notifySubscribers(comment);
+		db.subscribe(node, this);
 	}
 
 	public Collection<String> getComments(String eventId) {
@@ -62,8 +62,8 @@ public class GeekOlympics {
 		//todo: lookup user with given name
 	}
 
-	public void notifyComment(String message, String eventName, String user) {
-		notifications.add(user + ": commented on " + eventName + " " + message);
+	public void notifyComment(Edge target) {
+		notifications.add(target.getTo().getId() + ": commented on " + target.getFrom().getId() + " " + target.get("comment"));
 	}
 
 	public Collection<String> getNotifications() {
