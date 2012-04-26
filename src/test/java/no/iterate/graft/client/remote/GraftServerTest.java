@@ -44,10 +44,10 @@ public class GraftServerTest {
 		BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
 		
 		out.println("hello");
-		assertEquals("hello to you too", in.readLine());
+		assertEquals("hello", in.readLine());
 		
 		out.println("hello2");
-		assertEquals("hello2 to you too", in.readLine());
+		assertEquals("hello2", in.readLine());
 	}
 	
 	@Test(timeout=1000)

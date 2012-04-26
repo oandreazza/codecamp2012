@@ -15,7 +15,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-public class GraftServerProtocolTest {
+public class GraftServerProtocolIT {
 	
 	private static final int port = 1234;
 	private GraftServer server;
@@ -38,7 +38,7 @@ public class GraftServerProtocolTest {
 		
 		out.println("createNode");
 		
-		assertEquals("ok", in.readLine());
+		assertEquals("0", in.readLine());
 	}
 	
 	@Test(timeout=1000)
@@ -47,9 +47,12 @@ public class GraftServerProtocolTest {
 		PrintWriter out = new PrintWriter(client.getOutputStream(), true);
 		BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
 		
-		out.println("getNode 0");
+		out.println("createNode");
+		in.readLine();
 		
-		assertEquals("0", in.readLine());
+		out.println("getNodeById 0");
+		
+		assertEquals("id=0", in.readLine());
 	}
 	
 	@Test(timeout=1000)
@@ -63,9 +66,20 @@ public class GraftServerProtocolTest {
 		out.println("createNode");
 		in.readLine();
 		
-		out.println("getNode 1");
+		out.println("getNodeById 1");
 		
-		assertEquals("1", in.readLine());
+		assertEquals("id=1", in.readLine());
+	}
+	
+	@Test(timeout=1000)
+	public void serverReturnErrorWhenNoSuchNode() throws Exception {
+		Socket client = new Socket("localhost", port);
+		PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+		BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
+		
+		out.println("getNodeById 0");
+		
+		assertEquals("ERROR", in.readLine());
 	}
 	
 }

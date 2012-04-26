@@ -11,12 +11,13 @@ import javax.management.RuntimeErrorException;
 
 import jline.internal.InputStreamReader;
 
+import no.iterate.geekolympics.remote.GraftServerProtocol;
 import no.iterate.graft.Graft;
 import no.iterate.graft.Node;
 
 public class GraftServer implements Runnable {
 
-	private Graft graft = new Graft();
+	private GraftServerProtocol protocol = new GraftServerProtocol();
 	private final int port;
 	private ServerSocket serverSocket;
 
@@ -58,16 +59,19 @@ public class GraftServer implements Runnable {
 		return server;
 	}
 
+	@Deprecated // the client shall call us via telnet
 	public void addReplica(GraftServer replica) {
-		graft.addReplica(replica.graft);
+		protocol.getDb().addReplica(replica.protocol.getDb());
 	}
 
+	@Deprecated // the client shall call us via telnet
 	public Node createNode() {
-		return graft.createNode();
+		return protocol.getDb().createNode();
 	}
 
+	@Deprecated // the client shall call us via telnet
 	public Node getNodeById(String id) {
-		return graft.getNodeByProperty("id", id);
+		return protocol.getDb().getNodeByProperty("id", id);
 	}
 
 	@Override
@@ -88,13 +92,9 @@ public class GraftServer implements Runnable {
 
 					if ("shutdown".equals(input)) {
 						client.close();
-					} else if ("createNode".equals(input)) {
-						out.println("ok");
-					} else if (input.startsWith("getNode")) {
-						String[] parsed = input.split(" ");
-						out.println(parsed[1]);
 					} else {
-						out.println(input + " to you too");
+						String response = protocol.process(input);
+						out.println(response);
 					}
 				}
 			}
