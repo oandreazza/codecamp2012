@@ -125,7 +125,7 @@
 					<archive>
 						<manifest>
 							<mainClass>
-								no.iterate.geekolympics.CommandServer
+								no.iterate.graft.client.remote.GraftServer
 							</mainClass>
 						</manifest>
 					</archive>

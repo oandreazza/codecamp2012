@@ -37,7 +37,11 @@ public class GraftServer implements Runnable {
 
 	public static void main(String[] args) throws IOException,
 			ClassNotFoundException, InterruptedException {
-		GraftServer.start(9999);
+		int port = 9999;
+		if (args != null && args.length > 0) {
+			port = Integer.parseInt(args[0]);
+		}
+		GraftServer.start(port);
 	}
 
 	@Override
