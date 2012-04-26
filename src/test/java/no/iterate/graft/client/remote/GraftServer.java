@@ -1,5 +1,7 @@
 package no.iterate.graft.client.remote;
 
+import no.iterate.graft.Graft;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -12,6 +14,8 @@ class GraftServer {
 	private Thread serverThread;
 	private boolean isRunning;
 	private int port;
+	private Graft db = new Graft();
+	private boolean isClosed = false;
 
 	GraftServer(int port) {
 		this.port = port;
@@ -22,15 +26,16 @@ class GraftServer {
 			public void run() {
 				try {
 					ServerSocket server = new ServerSocket(port);
-					server.setSoTimeout(1000);
+					server.setSoTimeout(100);
 					try {
 						while (isRunning) {
 							once(server);
 						}
 					} catch (SocketTimeoutException e) {
-						e.printStackTrace();
+						// Hey, no problem mon
 					} finally {
 						server.close();
+						isClosed = true;
 					}
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -63,9 +68,17 @@ class GraftServer {
 	}
 
 	public void addReplica(GraftServer second) {
+		db.addReplica(second.db);
 	}
 
 	public void die() {
 		isRunning = false;
+		while (! isClosed) {
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		};
 	}
 }

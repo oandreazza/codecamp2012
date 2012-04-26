@@ -4,7 +4,6 @@ import no.iterate.graft.Node;
 
 import java.io.*;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 public class GraftClient {
 
@@ -29,16 +28,20 @@ public class GraftClient {
 	}
 
 	public String ping() {
+		return sendMessage("PING");
+	}
+
+	private String sendMessage(String message) {
 		Socket clientSocket = null;
 		try {
 			clientSocket = new Socket("localhost", port);
 		} catch (IOException e) {
 			return "ERROR";
 		}
-		
+
 		try {
 			OutputStreamWriter writer = new OutputStreamWriter(clientSocket.getOutputStream());
-			writer.write("PING");
+			writer.write(message);
 			writer.write("\n");
 			writer.flush();
 			BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
