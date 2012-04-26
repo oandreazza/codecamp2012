@@ -3,6 +3,7 @@ package no.iterate.graft.client.remote;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
@@ -61,12 +62,15 @@ public class GraftServer implements Runnable {
 					connection = socket.accept();
 				}
 
+				InputStream inputStream = connection.getInputStream();
 				reader = new BufferedReader(new InputStreamReader(
-						connection.getInputStream()));
+						inputStream));
 				writer = new BufferedWriter(new OutputStreamWriter(
 						connection.getOutputStream()));
+				
+				System.out.println("bytes to read " + inputStream.available());
 
-				message = (String) reader.readLine();
+				message = reader.readLine();
 				if (message == null) {
 					connection.close();
 				} else {
@@ -84,6 +88,11 @@ public class GraftServer implements Runnable {
 						Node node = db
 								.getNodeByProperty("id", parsedMessage[1]);
 						sendResponse(writer, node.getId());
+					} else if(message.startsWith("setReplica")) {
+						String[] parsedMessage = message.split(" ");
+						int port = Integer.parseInt(parsedMessage[1]);
+						addReplica(new GraftServer(port));
+						sendResponse(writer, "ok");
 					}
 				}
 			} while (!SHUTDOWN_COMMAND.equals(message));

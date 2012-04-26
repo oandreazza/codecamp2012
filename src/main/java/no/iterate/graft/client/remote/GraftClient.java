@@ -20,18 +20,20 @@ public class GraftClient {
 			IOException {
 		String host = "localhost";
 		int portNumber = server.getPortNumber();
-		System.out.println("[client] Connected to server " + host + ":" + portNumber);
-		
+		System.out.println("[client] Connected to server " + host + ":"
+				+ portNumber);
+
 		Socket socket = new Socket(host, portNumber);
-		writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-		reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+		writer = new BufferedWriter(new OutputStreamWriter(
+				socket.getOutputStream()));
+		reader = new BufferedReader(new InputStreamReader(
+				socket.getInputStream()));
 	}
 
 	public Node createNode() throws IOException {
 		sendToServer(GraftServer.CREATE_NODE_COMMAND);
-		
+
 		String id = reader.readLine();
-		System.out.println("[client] Created node id> " + id);
 		return new Node(id, null);
 	}
 
@@ -40,7 +42,7 @@ public class GraftClient {
 	}
 
 	public Node getNodeById(String id) throws IOException {
-			sendToServer(GraftServer.GET_NODE_BY_ID_COMMAND + " " + id);
+		sendToServer(GraftServer.GET_NODE_BY_ID_COMMAND + " " + id);
 
 		String nodeString = reader.readLine();
 		System.out.println("[client] getNodeById> " + nodeString);
@@ -57,11 +59,19 @@ public class GraftClient {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		System.out.println("[client] SendToServer> " + command);
 	}
 
 	private Node createFromString(String id) {
 		Node receivedNode = new Node(id, null);
 		return receivedNode;
+	}
+
+	public void setReplica(int port) throws IOException {
+		sendToServer("setReplica " + port);
+		
+		String result = reader.readLine();
+		System.out.println("[client] addReplicaResponse> " + result);
 	}
 
 }
