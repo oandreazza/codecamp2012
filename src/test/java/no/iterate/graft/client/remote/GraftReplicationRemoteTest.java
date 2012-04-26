@@ -6,12 +6,8 @@ import no.iterate.graft.Node;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.net.SocketTimeoutException;
 
 public class GraftReplicationRemoteTest {
@@ -51,34 +47,34 @@ public class GraftReplicationRemoteTest {
 
 	@Test
 	public void clientConnectsToSocket() throws IOException, InterruptedException {
-		Thread serverThread = new Thread() {
-			public void run() {
-				try {
-					ServerSocket server = new ServerSocket(3456);
-					server.setSoTimeout(100);
-					Socket socket = server.accept();
-					BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-					String message = reader.readLine();
-					String response = message.equals("PING") ? "OK" : "ERROR";
-					OutputStreamWriter writer = new OutputStreamWriter(socket.getOutputStream());
-					writer.write(response);
-					writer.write("\n");
-					writer.flush();
-					reader.close();
-					writer.close();
-					socket.close();
-					server.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		};
-		serverThread.start();
-		Thread.sleep(10);
-		GraftClient client = new GraftClient();
-		client.connectTo(3456);
-		String response = client.ping();
-		assertEquals("OK", response);
+		GraftServer server = new GraftServer();
+		server.invoke();
+		try {
+			Thread.sleep(10);
+			GraftClient client = new GraftClient();
+			client.connectTo(3456);
+			String response = client.ping();
+			assertEquals("OK", response);
+		} finally {
+			server.die();
+		}
+	}
+
+	@Test
+	public void forceServerToRunALoop() throws IOException, InterruptedException {
+		GraftServer graftServer = new GraftServer();
+		graftServer.invoke();
+		try {
+			Thread.sleep(10);
+			GraftClient client = new GraftClient();
+			client.connectTo(3456);
+			String response = client.ping();
+			assertEquals("OK", response);
+			String second = client.ping();
+			assertEquals("OK", second);
+		} finally {
+			graftServer.die();
+		}
 	}
 
 	@Test(expected=SocketTimeoutException.class)

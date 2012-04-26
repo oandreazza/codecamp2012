@@ -8,10 +8,10 @@ import java.net.UnknownHostException;
 
 public class GraftClient {
 
-	private Socket clientSocket;
+	private int port;
 
 	public void connectTo(int port) throws IOException {
-		clientSocket = new Socket("localhost", port);
+		this.port = port;
 	}
 
 	public Node createNode() {
@@ -29,6 +29,13 @@ public class GraftClient {
 	}
 
 	public String ping() {
+		Socket clientSocket = null;
+		try {
+			clientSocket = new Socket("localhost", port);
+		} catch (IOException e) {
+			return "ERROR";
+		}
+		
 		try {
 			OutputStreamWriter writer = new OutputStreamWriter(clientSocket.getOutputStream());
 			writer.write("PING");
@@ -39,6 +46,12 @@ public class GraftClient {
 		} catch (IOException e) {
 			e.printStackTrace();
 			return "ERROR";
+		} finally {
+			try {
+				clientSocket.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }
