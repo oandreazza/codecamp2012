@@ -9,7 +9,9 @@ import java.net.Socket;
 
 import jline.internal.InputStreamReader;
 
+import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -17,15 +19,15 @@ import org.junit.Test;
 public class GraftServerTest {
 	
 	private static final int port = 1234;
-	private static GraftServer server;
+	private GraftServer server;
 	
-	@BeforeClass
-	public static void setUp() {
+	@Before
+	public void setUp() {
 		server = GraftServer.start(port);
 	}
 	
-	@AfterClass
-	public static void shutDown() {
+	@After
+	public void shutDown() {
 		server.stop();
 	}
 	
@@ -44,11 +46,11 @@ public class GraftServerTest {
 		PrintWriter out = new PrintWriter(client.getOutputStream(), true);
 		BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
 		
-		//out.println("hello");
+		out.println("hello");
 		String response = in.readLine();
 		
 		// We expect NO exception
-		assertEquals("ok", response);
+		assertEquals("hello to you too", response);
 	}
 
 }

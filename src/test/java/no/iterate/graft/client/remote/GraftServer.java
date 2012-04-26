@@ -80,9 +80,12 @@ public class GraftServer implements Runnable{
 				PrintWriter out = new PrintWriter(client.getOutputStream(), true);
 				BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
 				
-				//in.readLine();
+				String input = in.readLine();
 				
-				out.println("ok");
+				System.err.println("SERVER GOT " + input);
+				
+				out.println(input + " to you too");
+				client.close();
 			}
 			
 		} catch (SocketException e) {
