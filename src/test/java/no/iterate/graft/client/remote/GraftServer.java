@@ -1,6 +1,7 @@
 package no.iterate.graft.client.remote;
 
 import no.iterate.graft.Graft;
+import no.iterate.graft.Node;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,7 +22,7 @@ class GraftServer {
 		this.port = port;
 	}
 
-	public void invoke() {
+	public void start() {
 		 serverThread = new Thread() {
 			public void run() {
 				try {
@@ -51,7 +52,7 @@ class GraftServer {
 		try {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			String message = reader.readLine();
-			String response = message.equals("PING") ? "OK" : "ERROR";
+			String response = processMessage(message);
 			OutputStreamWriter writer = new OutputStreamWriter(socket.getOutputStream());
 			writer.write(response);
 			writer.write("\n");
@@ -61,9 +62,26 @@ class GraftServer {
 		}
 	}
 
+	private String processMessage(String message) {
+		if(message.equals("createNode")) {
+			Node node = db.createNode();
+			return node.getId();
+		} else if(message.startsWith("getNodeById")) {
+			String[] parsedMessage = message.split(" ");
+			String id = parsedMessage[1];
+			Node node = db.getNodeByProperty("id", id);
+			return node.getId();
+		} else if (message.equals("kill")) {
+			db.kill();
+			return "OK";
+		} else {
+			return "OK";
+		}
+	}
+
 	public static GraftServer start(int port) {
 		GraftServer graftServer = new GraftServer(port);
-		graftServer.invoke();
+		graftServer.start();
 		return graftServer;
 	}
 

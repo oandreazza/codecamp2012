@@ -9,22 +9,26 @@ public class GraftClient {
 
 	private int port;
 
+	public GraftClient(int port) {
+		this.port = port;
+	}
+
 	public void connectTo(int port) throws IOException {
 		this.port = port;
 	}
 
 	public Node createNode() {
-		return new Node("1", null);
+		String message = sendMessage("createNode");
+		return new Node(message, null);
 	}
 
 	public void kill() {
+		sendMessage("kill");
 	}
 
 	public Node getNodeById(String id) {
-		return new Node(id, null);
-	}
-
-	public void setReplica(int i) {
+		String message = sendMessage("getNodeById " + id);
+		return new Node(message, null);
 	}
 
 	public String ping() {

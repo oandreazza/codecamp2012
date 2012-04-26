@@ -3,7 +3,6 @@ package no.iterate.graft.client.remote;
 import static org.junit.Assert.*;
 import no.iterate.graft.Node;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -19,15 +18,12 @@ public class GraftReplicationRemoteTest {
 		first.addReplica(second);
 
 		try {
-			GraftClient client = new GraftClient();
-			client.connectTo(1234);
-			Node created = client.createNode();
-			client.kill();
-			client.connectTo(1235);
-			Node fetched = client.getNodeById(created.getId());
+			GraftClient firstClient = new GraftClient(1234);
+			Node created = firstClient.createNode();
+			firstClient.kill();
+			GraftClient secondClient = new GraftClient(1235);
+			Node fetched = secondClient.getNodeById(created.getId());
 			assertEquals(created.get("id"), fetched.get("id"));
-			// kill the second server
-			client.kill();
 		} finally {
 			first.die();
 			second.die();
@@ -39,8 +35,7 @@ public class GraftReplicationRemoteTest {
 		GraftServer server = GraftServer.start(3456);
 		try {
 			Thread.sleep(10);
-			GraftClient client = new GraftClient();
-			client.connectTo(3456);
+			GraftClient client = new GraftClient(3456);
 			String response = client.ping();
 			assertEquals("OK", response);
 		} finally {
@@ -48,43 +43,12 @@ public class GraftReplicationRemoteTest {
 		}
 	}
 
-	@Test
-	public void clientConnectsToSocket2() throws IOException, InterruptedException {
-		GraftServer server = GraftServer.start(3456);
-		try {
-			Thread.sleep(10);
-			GraftClient client = new GraftClient();
-			client.connectTo(3456);
-			String response = client.ping();
-			assertEquals("OK", response);
-		} finally {
-			server.die();
-		}
-	}
-
-	@Test
-	public void clientConnectsToSocket3() throws IOException, InterruptedException {
-		Thread.sleep(1000);
-		GraftServer server = GraftServer.start(3456);
-		try {
-			Thread.sleep(10);
-			GraftClient client = new GraftClient();
-			client.connectTo(3456);
-			String response = client.ping();
-			assertEquals("OK", response);
-		} finally {
-			server.die();
-		}
-	}
-
-	@Ignore
 	@Test
 	public void forceServerToRunALoop() throws IOException, InterruptedException {
 		GraftServer server = GraftServer.start(3456);
 		try {
 			Thread.sleep(10);
-			GraftClient client = new GraftClient();
-			client.connectTo(3456);
+			GraftClient client = new GraftClient(3456);
 			String response = client.ping();
 			assertEquals("OK", response);
 			String second = client.ping();
