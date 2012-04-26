@@ -1,4 +1,4 @@
-package no.iterate.geekolympics.remote;
+package no.iterate.graft.client.remote;
 
 import java.util.Map.Entry;
 

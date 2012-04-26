@@ -11,7 +11,6 @@ import javax.management.RuntimeErrorException;
 
 import jline.internal.InputStreamReader;
 
-import no.iterate.geekolympics.remote.GraftServerProtocol;
 import no.iterate.graft.Graft;
 import no.iterate.graft.Node;
 

@@ -1,10 +1,9 @@
 package no.iterate.graft.client.remote;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import no.iterate.graft.Node;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Test;
 
 public class GraftReplicationRemoteTest {

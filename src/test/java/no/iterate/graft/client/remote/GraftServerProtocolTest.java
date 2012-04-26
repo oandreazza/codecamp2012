@@ -1,6 +1,8 @@
-package no.iterate.geekolympics.remote;
+package no.iterate.graft.client.remote;
 
 import static org.junit.Assert.assertEquals;
+
+import no.iterate.graft.client.remote.GraftServerProtocol;
 
 import org.junit.Before;
 import org.junit.Test;
