@@ -70,7 +70,7 @@ public class Graft implements NodeListener {
 		graftReplicator.propagateProperties(target);
 	}
 
-	private void addReplica(Graft graft) {
+	public void addReplica(Graft graft) {
 		graftReplicator.addReplica(graft);
 	}
 
