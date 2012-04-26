@@ -19,7 +19,6 @@ public class GraftReplicationOverSocketsTest {
 			Graft krzys = new Graft();
 			Graft stig = new Graft();
 
-			//krzys.addReplica(stig);
 			krzysReplicator = new RemoteReplicator(1234, 1235, krzys);
 			krzys.setReplicator(krzysReplicator);
 

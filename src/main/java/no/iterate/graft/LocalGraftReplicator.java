@@ -11,10 +11,8 @@ public class LocalGraftReplicator implements GraftReplicator {
 
 	final List<Graft> replicas = new ArrayList<Graft>();
 
-	@Override
-	@Deprecated
-	public void addReplica(Graft graft) {
-		replicas.add(graft);
+	public LocalGraftReplicator(Graft graft2) {
+		replicas.add(graft2);
 	}
 
 	@Override

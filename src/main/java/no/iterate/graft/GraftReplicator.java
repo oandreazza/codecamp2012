@@ -1,8 +1,6 @@
 package no.iterate.graft;
 
 public interface GraftReplicator {
-	@Deprecated
-	void addReplica(Graft graft);
 
 	void propagateEdge(Edge edge);
 

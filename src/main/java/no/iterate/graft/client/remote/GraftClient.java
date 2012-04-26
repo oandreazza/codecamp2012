@@ -37,8 +37,6 @@ public class GraftClient {
 
 	private String sendMessage(String message) {
 
-		System.out.println("CLIENT Sending " + message);
-
 		Socket clientSocket = null;
 		try {
 			clientSocket = new Socket("localhost", port);

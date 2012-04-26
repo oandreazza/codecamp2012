@@ -18,11 +18,6 @@ public class RemoteReplicator implements GraftReplicator {
 	}
 
 	@Override
-	public void addReplica(Graft graft) {
-		//To change body of implemented methods use File | Settings | File Templates.
-	}
-
-	@Override
 	public void propagateEdge(Edge edge) {
 		//To change body of implemented methods use File | Settings | File Templates.
 	}

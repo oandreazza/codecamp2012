@@ -71,7 +71,6 @@ class GraftServer {
 	}
 
 	private String processMessage(String message) {
-		System.out.println("SERVER Received " + message);
 		if(message.equals("createNode")) {
 			Node node = db.createNode();
 			return node.getId();
@@ -101,10 +100,6 @@ class GraftServer {
 		GraftServer graftServer = new GraftServer(port, db);
 		graftServer.start();
 		return graftServer;
-	}
-
-	public void addReplica(GraftServer second) {
-		db.addReplica(second.db);
 	}
 
 	public void die() {
