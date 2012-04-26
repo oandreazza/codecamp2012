@@ -1,36 +1,14 @@
 package no.iterate.graft;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+public interface GraftReplicator {
+	@Deprecated
+	void addReplica(Graft graft);
 
-/**
- * Propagate changes to all replicas (likely over some remoting protocol)
- */
-public class GraftReplicator {
+	void propagateEdge(Edge edge);
 
-	final List<Graft> replicas = new ArrayList<Graft>();
+	void propagateNode(Node node);
 
-	void addReplica(Graft graft) {
-		replicas.add(graft);
-	}
+	void propagateProperties(PropertiesHolder target);
 
-	void propagateEdge(Edge edge) {
-		for (Graft replica : replicas) {
-			replica.applyPropagatedEdge(edge);
-		}
-	}
-
-	void propagateNode(Node node) {
-		for (Graft replica : replicas) {
-			replica.applyPropagatedNode(node);
-		}
-	}
-
-	void propagateProperties(PropertiesHolder target) {
-		Map<String, String> properties = target.getProperties();
-		for (Graft replica : replicas)
-			replica.applyPropagatedProperties(properties);
-	}
-
+	void die();
 }

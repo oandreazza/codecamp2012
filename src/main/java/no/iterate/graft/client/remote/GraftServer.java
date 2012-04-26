@@ -14,11 +14,12 @@ import java.net.SocketTimeoutException;
 
 class GraftServer {
 	private int port;
-	private Graft db = new Graft();
+	private final Graft db;
 	private ServerSocket server;
 
-	GraftServer(int port) {
+	GraftServer(int port, Graft db) {
 		this.port = port;
+		this.db = db;
 	}
 
 	public void start() {
@@ -70,6 +71,7 @@ class GraftServer {
 	}
 
 	private String processMessage(String message) {
+		System.out.println("SERVER Received " + message);
 		if(message.equals("createNode")) {
 			Node node = db.createNode();
 			return node.getId();
@@ -78,6 +80,11 @@ class GraftServer {
 			String id = parsedMessage[1];
 			Node node = db.getNodeByProperty("id", id);
 			return node.getId();
+		} else if (message.startsWith("propagateNode ")) {
+			String[] parsedMessage = message.split(" ");
+			String id = parsedMessage[1];
+			db.applyPropagatedNode(new Node(id, null));
+			return "OK";
 		} else if (message.equals("kill")) {
 			db.kill();
 			return "OK";
@@ -87,7 +94,11 @@ class GraftServer {
 	}
 
 	public static GraftServer start(int port) {
-		GraftServer graftServer = new GraftServer(port);
+		return start(port, new Graft());
+	}
+
+	public static GraftServer start(int port, Graft db) {
+		GraftServer graftServer = new GraftServer(port, db);
 		graftServer.start();
 		return graftServer;
 	}

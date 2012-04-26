@@ -1,5 +1,7 @@
 package no.iterate.graft;
 
+import no.iterate.graft.client.remote.RemoteReplicator;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -11,7 +13,7 @@ public class Graft implements NodeListener {
 
 	private final GraftStorage graftStorage = new GraftStorage();
 	private final GraftSubscriptions graftSubscriptions = new GraftSubscriptions();
-	private final GraftReplicator graftReplicator = new GraftReplicator();
+	private GraftReplicator graftReplicator = new LocalGraftReplicator();
 
 	public static List<Graft> getTwoGrafts() {
 		List<Graft> grafts = new ArrayList<Graft>();
@@ -57,7 +59,7 @@ public class Graft implements NodeListener {
 		graftStorage.addReplicaEdge(edge, this);
 	}
 
-	void applyPropagatedNode(Node node) {
+	public void applyPropagatedNode(Node node) {
 		graftStorage.addReplicaNode(node, this);
 	}
 
@@ -82,5 +84,9 @@ public class Graft implements NodeListener {
 
 	public void notifySubscribers(Edge target) {
 		graftSubscriptions.notifySubscribers(target);
+	}
+
+	public void setReplicator(GraftReplicator replicator) {
+		graftReplicator = replicator;
 	}
 }
