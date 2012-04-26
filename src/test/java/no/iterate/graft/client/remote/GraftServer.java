@@ -85,9 +85,14 @@ public class GraftServer implements Runnable {
 				while ((input = in.readLine()) != null) {
 
 					System.err.println("SERVER GOT " + input);
-					
+
 					if ("shutdown".equals(input)) {
 						client.close();
+					} else if ("createNode".equals(input)) {
+						out.println("ok");
+					} else if (input.startsWith("getNode")) {
+						String[] parsed = input.split(" ");
+						out.println(parsed[1]);
 					} else {
 						out.println(input + " to you too");
 					}
