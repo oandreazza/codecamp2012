@@ -9,56 +9,63 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 
 class GraftServer {
-	private Thread serverThread;
-	private boolean isRunning;
 	private int port;
 	private Graft db = new Graft();
-	private boolean isClosed = false;
+	private ServerSocket server;
 
 	GraftServer(int port) {
 		this.port = port;
 	}
 
 	public void start() {
-		 serverThread = new Thread() {
+
+		try {
+			server = new ServerSocket(port);
+		} catch (IOException e) {
+			System.err.println("SERVER failed to start " + e);
+			return;
+		}
+
+		new Thread() {
 			public void run() {
 				try {
-					ServerSocket server = new ServerSocket(port);
 					server.setSoTimeout(100);
 					try {
-						while (isRunning) {
+						while (!server.isClosed()) {
 							once(server);
 						}
 					} catch (SocketTimeoutException e) {
 						// Hey, no problem mon
-					} finally {
-						server.close();
-						isClosed = true;
+					}
+				} catch (SocketException e) {
+					if (server.isClosed()) {
+						System.err.println("SERVER Closed already");
+					} else {
+						e.printStackTrace();
 					}
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			}
-		};
-		isRunning = true;
-		serverThread.start();
+		}.start();
 	}
 
 	private void once(ServerSocket server) throws IOException {
-		Socket socket = server.accept();
+		Socket client = server.accept();
 		try {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			BufferedReader reader = new BufferedReader(new InputStreamReader(client.getInputStream()));
 			String message = reader.readLine();
 			String response = processMessage(message);
-			OutputStreamWriter writer = new OutputStreamWriter(socket.getOutputStream());
+			OutputStreamWriter writer = new OutputStreamWriter(client.getOutputStream());
 			writer.write(response);
 			writer.write("\n");
 			writer.flush();
 		} finally {
-			socket.close();
+			client.close();
 		}
 	}
 
@@ -90,13 +97,10 @@ class GraftServer {
 	}
 
 	public void die() {
-		isRunning = false;
-		while (! isClosed) {
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		};
+		try {
+			server.close();
+		} catch (IOException e) {
+			System.err.println("SERVER rejected to die " + e);
+		}
 	}
 }
