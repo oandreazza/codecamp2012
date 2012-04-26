@@ -15,14 +15,14 @@ public class GraftClient {
 	}
 
 	public Node createNode() {
-		return null;
+		return new Node("1", null);
 	}
 
 	public void kill() {
 	}
 
 	public Node getNodeById(String id) {
-		return null;
+		return new Node(id, null);
 	}
 
 	public void setReplica(int i) {

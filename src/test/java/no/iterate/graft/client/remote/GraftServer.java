@@ -11,12 +11,17 @@ import java.net.SocketTimeoutException;
 class GraftServer {
 	private Thread serverThread;
 	private boolean isRunning;
+	private int port;
+
+	GraftServer(int port) {
+		this.port = port;
+	}
 
 	public void invoke() {
 		 serverThread = new Thread() {
 			public void run() {
 				try {
-					ServerSocket server = new ServerSocket(3456);
+					ServerSocket server = new ServerSocket(port);
 					server.setSoTimeout(1000);
 					try {
 						while (isRunning) {
@@ -51,8 +56,10 @@ class GraftServer {
 		}
 	}
 
-	public static GraftServer start(int i) {
-		return null;
+	public static GraftServer start(int port) {
+		GraftServer graftServer = new GraftServer(port);
+		graftServer.invoke();
+		return graftServer;
 	}
 
 	public void addReplica(GraftServer second) {

@@ -47,8 +47,7 @@ public class GraftReplicationRemoteTest {
 
 	@Test
 	public void clientConnectsToSocket() throws IOException, InterruptedException {
-		GraftServer server = new GraftServer();
-		server.invoke();
+		GraftServer server = GraftServer.start(3456);
 		try {
 			Thread.sleep(10);
 			GraftClient client = new GraftClient();
@@ -62,8 +61,7 @@ public class GraftReplicationRemoteTest {
 
 	@Test
 	public void forceServerToRunALoop() throws IOException, InterruptedException {
-		GraftServer graftServer = new GraftServer();
-		graftServer.invoke();
+		GraftServer server = GraftServer.start(3456);
 		try {
 			Thread.sleep(10);
 			GraftClient client = new GraftClient();
@@ -73,7 +71,7 @@ public class GraftReplicationRemoteTest {
 			String second = client.ping();
 			assertEquals("OK", second);
 		} finally {
-			graftServer.die();
+			server.die();
 		}
 	}
 
