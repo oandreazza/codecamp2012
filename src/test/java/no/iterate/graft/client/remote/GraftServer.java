@@ -14,24 +14,24 @@ import jline.internal.InputStreamReader;
 import no.iterate.graft.Graft;
 import no.iterate.graft.Node;
 
-public class GraftServer implements Runnable{
+public class GraftServer implements Runnable {
 
 	private Graft graft = new Graft();
 	private final int port;
 	private ServerSocket serverSocket;
-	
+
 	public GraftServer() {
 		this(4321);
 	}
-	
+
 	public static void main(String[] args) {
 		GraftServer.start(9999);
 	}
-	
+
 	private GraftServer(int port) {
 		this(port, false);
 	}
-	
+
 	private GraftServer(int port, boolean start) {
 		this.port = port;
 		if (start) {
@@ -54,10 +54,9 @@ public class GraftServer implements Runnable{
 	public static GraftServer start(int port) {
 		GraftServer server = new GraftServer(port, true);
 		new Thread(server).start();
-		
+
 		return server;
 	}
-
 
 	public void addReplica(GraftServer replica) {
 		graft.addReplica(replica.graft);
@@ -76,21 +75,29 @@ public class GraftServer implements Runnable{
 		try {
 			Socket client;
 			while ((client = serverSocket.accept()) != null) {
-			
-				PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-				BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
-				
-				String input = in.readLine();
-				
-				System.err.println("SERVER GOT " + input);
-				
-				out.println(input + " to you too");
-				client.close();
+
+				PrintWriter out = new PrintWriter(client.getOutputStream(),
+						true);
+				BufferedReader in = new BufferedReader(new InputStreamReader(
+						client.getInputStream()));
+
+				String input;
+				while ((input = in.readLine()) != null) {
+
+					System.err.println("SERVER GOT " + input);
+					
+					if ("shutdown".equals(input)) {
+						client.close();
+					} else {
+						out.println(input + " to you too");
+					}
+				}
 			}
-			
+
 		} catch (SocketException e) {
 			if (serverSocket.isClosed()) {
-				System.err.println("SERVER Socket has been closed, stopping the thread");
+				System.err
+						.println("SERVER Socket has been closed, stopping the thread");
 			} else {
 				System.err.println("SERVER socket exception " + e);
 			}

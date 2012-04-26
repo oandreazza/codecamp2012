@@ -10,9 +10,7 @@ import java.net.Socket;
 import jline.internal.InputStreamReader;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 
@@ -41,16 +39,26 @@ public class GraftServerTest {
 	
 	@Test(timeout=1000)
 	public void serverSendsResponseForCreateNode() throws Exception {
-		
 		Socket client = new Socket("localhost", port);
 		PrintWriter out = new PrintWriter(client.getOutputStream(), true);
 		BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
 		
 		out.println("hello");
-		String response = in.readLine();
+		assertEquals("hello to you too", in.readLine());
 		
-		// We expect NO exception
-		assertEquals("hello to you too", response);
+		out.println("hello2");
+		assertEquals("hello2 to you too", in.readLine());
+	}
+	
+	@Test(timeout=1000)
+	public void serverShutdownAfterShutdownCommand() throws Exception {
+		Socket client = new Socket("localhost", port);
+		PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+		BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
+		
+		out.println("shutdown");
+		
+		assertEquals(null, in.readLine());
 	}
 
 }
