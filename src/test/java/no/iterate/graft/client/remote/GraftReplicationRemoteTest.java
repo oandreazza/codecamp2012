@@ -3,15 +3,24 @@ package no.iterate.graft.client.remote;
 import static org.junit.Assert.*;
 import no.iterate.graft.Node;
 
+import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Test;
 
 public class GraftReplicationRemoteTest {
 
+	private GraftServer first = GraftServer.start(1234);
+	private GraftServer second = GraftServer.start(1235);
+	
+	@After
+	public void shutDown() {
+		first.stop();
+		second.stop();
+	}
+
 	@Test
 	public void replicateDataOverSocket() throws Exception {
 		GraftClient client = new GraftClient();
-		GraftServer first = GraftServer.start(1234);
-		GraftServer second = GraftServer.start(1235);
 		first.addReplica(second);
 		client.connectTo(first);
 		
