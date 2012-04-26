@@ -7,23 +7,15 @@ import java.net.Socket;
 
 public class GraftClient {
 
-	private int port;
+	private final int port;
 
 	public GraftClient(int port) {
-		this.port = port;
-	}
-
-	public void connectTo(int port) throws IOException {
 		this.port = port;
 	}
 
 	public Node createNode() {
 		String message = sendMessage("createNode");
 		return new Node(message, null);
-	}
-
-	public void kill() {
-		sendMessage("kill");
 	}
 
 	public Node getNodeById(String id) {
@@ -37,7 +29,7 @@ public class GraftClient {
 
 	private String sendMessage(String message) {
 
-		Socket clientSocket = null;
+		Socket clientSocket;
 		try {
 			clientSocket = new Socket("localhost", port);
 		} catch (IOException e) {
@@ -45,10 +37,8 @@ public class GraftClient {
 		}
 
 		try {
-			OutputStreamWriter writer = new OutputStreamWriter(clientSocket.getOutputStream());
-			writer.write(message);
-			writer.write("\n");
-			writer.flush();
+			PrintWriter writer = new PrintWriter(clientSocket.getOutputStream(), true);
+			writer.println(message);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 			return reader.readLine();
 		} catch (IOException e) {

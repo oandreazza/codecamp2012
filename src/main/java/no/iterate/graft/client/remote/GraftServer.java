@@ -6,18 +6,29 @@ import no.iterate.graft.Node;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 
 class GraftServer {
-	private int port;
+
+	private final int port;
 	private final Graft db;
 	private ServerSocket server;
 
-	GraftServer(int port, Graft db) {
+	public static GraftServer start(int port) {
+		return start(port, new Graft());
+	}
+
+	public static GraftServer start(int port, Graft db) {
+		GraftServer graftServer = new GraftServer(port, db);
+		graftServer.start();
+		return graftServer;
+	}
+
+	private GraftServer(int port, Graft db) {
 		this.port = port;
 		this.db = db;
 	}
@@ -34,14 +45,11 @@ class GraftServer {
 		new Thread() {
 			public void run() {
 				try {
-					server.setSoTimeout(100);
-					try {
-						while (!server.isClosed()) {
-							once(server);
-						}
-					} catch (SocketTimeoutException e) {
-						// Hey, no problem mon
+					while (!server.isClosed()) {
+						step(server);
 					}
+				} catch (SocketTimeoutException e) {
+					// Hey, no problem mon
 				} catch (SocketException e) {
 					if (server.isClosed()) {
 						System.err.println("SERVER Closed already");
@@ -55,16 +63,14 @@ class GraftServer {
 		}.start();
 	}
 
-	private void once(ServerSocket server) throws IOException {
+	private void step(ServerSocket server) throws IOException {
 		Socket client = server.accept();
 		try {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(client.getInputStream()));
 			String message = reader.readLine();
 			String response = processMessage(message);
-			OutputStreamWriter writer = new OutputStreamWriter(client.getOutputStream());
-			writer.write(response);
-			writer.write("\n");
-			writer.flush();
+			PrintWriter writer = new PrintWriter(client.getOutputStream(), true);
+			writer.println(response);
 		} finally {
 			client.close();
 		}
@@ -84,22 +90,15 @@ class GraftServer {
 			String id = parsedMessage[1];
 			db.applyPropagatedNode(new Node(id, null));
 			return "OK";
+		} else if (message.equals("PING")) {
+			return "OK";
 		} else if (message.equals("kill")) {
 			db.kill();
 			return "OK";
 		} else {
-			return "OK";
+			System.out.println("SERVER Unknown command " + message);
+			return "ERROR";
 		}
-	}
-
-	public static GraftServer start(int port) {
-		return start(port, new Graft());
-	}
-
-	public static GraftServer start(int port, Graft db) {
-		GraftServer graftServer = new GraftServer(port, db);
-		graftServer.start();
-		return graftServer;
 	}
 
 	public void die() {

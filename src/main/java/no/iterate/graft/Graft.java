@@ -57,6 +57,16 @@ public class Graft implements NodeListener {
 
 	// ########################################################################## REPLICATION
 
+
+	@Override
+	public void update(PropertiesHolder target) {
+		graftReplicator.propagateProperties(target);
+	}
+
+	public void setReplicator(GraftReplicator replicator) {
+		graftReplicator = replicator;
+	}
+
 	void applyPropagatedEdge(Edge edge) {
 		graftStorage.addReplicaEdge(edge, this);
 	}
@@ -69,11 +79,6 @@ public class Graft implements NodeListener {
 		graftStorage.updateNode(properties);
 	}
 
-	@Override
-	public void update(PropertiesHolder target) {
-		graftReplicator.propagateProperties(target);
-	}
-
 	// ########################################################################## SUBSCRIPTIONS
 
 	public void subscribe(Node node, IGraftSubscriber subscriber) {
@@ -82,9 +87,5 @@ public class Graft implements NodeListener {
 
 	public void notifySubscribers(Edge target) {
 		graftSubscriptions.notifySubscribers(target);
-	}
-
-	public void setReplicator(GraftReplicator replicator) {
-		graftReplicator = replicator;
 	}
 }

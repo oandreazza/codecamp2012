@@ -8,7 +8,6 @@ import no.iterate.graft.PropertiesHolder;
 
 public class RemoteReplicator implements GraftReplicator {
 
-
 	private final GraftClient client;
 	private final GraftServer server;
 
