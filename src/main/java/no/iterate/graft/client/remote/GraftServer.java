@@ -108,11 +108,14 @@ public class GraftServer {
 			return "OK";
 		} else if (message.startsWith("propagateProperties")) {
 			String[] parsed = message.split(" ");
-			String id = parsed[1];
 			Map<String, String> properties = new HashMap<String, String>();
-			properties.put("id", id);
-			properties.put("key", "value");
+			
+			for (int i = 1; i < parsed.length; i++) {
+				String[] string = parsed[i].split(":");
+				properties.put(string[0], string[1]);
+			}
 			db.applyPropagatedProperties(properties);
+			
 			return "OK";
 		} else if (message.equals("PING")) {
 			return "OK";

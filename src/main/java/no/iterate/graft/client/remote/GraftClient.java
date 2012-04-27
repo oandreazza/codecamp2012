@@ -6,6 +6,7 @@ import no.iterate.graft.PropertiesHolder;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.Map.Entry;
 
 public class GraftClient {
 
@@ -67,8 +68,10 @@ public class GraftClient {
 	}
 
 	public void propagateProperties(PropertiesHolder target) {
-		String message = "propagateProperties " + target.getId();
-
+		String message = "propagateProperties ";
+		for (Entry<String, String> each : target.getProperties().entrySet()) {
+			message += each.getKey() + ":" + each.getValue() + " ";
+		}
 		sendMessage(message);
 	}
 }
