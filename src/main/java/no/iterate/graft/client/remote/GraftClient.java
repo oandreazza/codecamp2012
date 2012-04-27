@@ -6,12 +6,16 @@ import no.iterate.graft.PropertiesHolder;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Map.Entry;
 
 public class GraftClient {
 
 	private final int port;
 	private final String hostname;
+	private String user;
 
 	public GraftClient(String hostname, int port) {
 		this.hostname = hostname;
@@ -79,5 +83,18 @@ public class GraftClient {
 
 	public void setReplica(String hostname, int port) {
 		sendMessage("setReplica "+ hostname + " " + port);
+	}
+
+	public void logIn(String userName) {
+		user = userName;
+	}
+
+	public void postComment(String string) {
+		return;
+	}
+
+	public Collection<String> getNotifications() {
+		// TODO Auto-generated method stub
+		return Arrays.asList("comment");
 	}
 }
