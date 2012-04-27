@@ -1,6 +1,6 @@
 package no.iterate.graft;
 
-import no.iterate.graft.client.remote.GraftServer;
+import no.iterate.graft.client.remote.RemoteReplicator;
 
 import java.util.Date;
 
@@ -11,6 +11,8 @@ public class Main {
 			port = Integer.parseInt(args[0]);
 		}
 		System.out.format("Server starting at %s\n", new Date());
-		GraftServer.start(port);
+		Graft graft = new Graft();
+		RemoteReplicator replicator = new RemoteReplicator(port, graft);
+		graft.setReplicator(replicator);
 	}
 }

@@ -11,7 +11,7 @@ public class RemoteReplicator implements GraftReplicator {
 	private GraftClient replicaClient;
 	private final GraftServer server;
 
-	RemoteReplicator(int port, Graft db) {
+	public RemoteReplicator(int port, Graft db) {
 		server = GraftServer.start(port, db);
 	}
 	
