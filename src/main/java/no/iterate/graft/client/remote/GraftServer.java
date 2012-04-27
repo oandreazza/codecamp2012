@@ -12,6 +12,10 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.codehaus.groovy.antlr.treewalker.PreOrderTraversal;
 
 public class GraftServer {
 
@@ -102,6 +106,15 @@ public class GraftServer {
 			Node to = db.getNodeByProperty("id", toNodeId);
 			Edge edge = new Edge(edgeId, db, from, to);
 			db.applyPropagatedEdge(edge);
+
+			return "OK";
+		} else if (message.startsWith("propagateProperties")) {
+			String[] parsed = message.split(" ");
+			String id = parsed[1];
+			Map<String, String> properties = new HashMap<String, String>();
+			properties.put("id", id);
+			properties.put("key", "value");
+			db.applyPropagatedProperties(properties);
 			
 			return "OK";
 		} else if (message.equals("PING")) {

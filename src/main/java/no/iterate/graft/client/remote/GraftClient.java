@@ -2,6 +2,7 @@ package no.iterate.graft.client.remote;
 
 import no.iterate.graft.Edge;
 import no.iterate.graft.Node;
+import no.iterate.graft.PropertiesHolder;
 
 import java.io.*;
 import java.net.Socket;
@@ -29,7 +30,8 @@ public class GraftClient {
 	}
 
 	public void propagateEdge(Edge edge) {
-		sendMessage("propagateEdge " + edge.getId() + " " + edge.getFrom().getId() + " " + edge.getTo().getId());
+		sendMessage("propagateEdge " + edge.getId() + " "
+				+ edge.getFrom().getId() + " " + edge.getTo().getId());
 	}
 
 	public String ping() {
@@ -46,9 +48,11 @@ public class GraftClient {
 		}
 
 		try {
-			PrintWriter writer = new PrintWriter(clientSocket.getOutputStream(), true);
+			PrintWriter writer = new PrintWriter(
+					clientSocket.getOutputStream(), true);
 			writer.println(message);
-			BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+			BufferedReader reader = new BufferedReader(new InputStreamReader(
+					clientSocket.getInputStream()));
 			return reader.readLine();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -60,5 +64,11 @@ public class GraftClient {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public void propagateProperties(PropertiesHolder target) {
+		String message = "propagateProperties " + target.getId();
+
+		sendMessage(message);
 	}
 }

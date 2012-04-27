@@ -1,5 +1,9 @@
 package no.iterate.graft.client.remote;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.Collection;
+
 import no.iterate.graft.Edge;
 import no.iterate.graft.Graft;
 import no.iterate.graft.Node;
@@ -7,11 +11,6 @@ import no.iterate.graft.Node;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.net.InetAddress;
-import java.util.Collection;
-
-import static org.junit.Assert.*;
 
 public class GraftReplicationOverSocketsTest {
 
@@ -21,19 +20,27 @@ public class GraftReplicationOverSocketsTest {
 	private Graft stig;
 
 	@Test
-	public void replicateOverSockets() throws Exception {
+	public void replicateNodeOverSockets() throws Exception {
 		Node original = krzys.createNode();
 		Node replicated = stig.getNodeByProperty("id", original.getId());
 		assertEquals(original.getId(), replicated.getId());
 	}
 	
 	@Test
-	public void replicateEdgesToo() {
+	public void replicateEdgeOverSockets() {
 		Node from = krzys.createNode();
 		Node to = krzys.createNode();
 		Edge edge = krzys.createEdge(from, to);
 		Collection<Edge> edgesFrom = stig.getEdgesFrom(from.getId());
 		assertEquals(edge.getId(), edgesFrom.iterator().next().getId());
+	}
+	
+	@Test
+	public void replicatePropertiesOverSockets() {
+		Node node = krzys.createNode();
+		node.put("key", "value");
+		Node replicated = stig.getNodeByProperty("id", node.getId());
+		assertEquals("value", replicated.get("key"));
 	}
 
 	@Before

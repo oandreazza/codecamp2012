@@ -28,8 +28,7 @@ public class RemoteReplicator implements GraftReplicator {
 
 	@Override
 	public void propagateProperties(PropertiesHolder target) {
-		// To change body of implemented methods use File | Settings | File
-		// Templates.
+		client.propagateProperties(target);
 	}
 
 	@Override
