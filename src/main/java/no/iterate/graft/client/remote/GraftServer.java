@@ -15,8 +15,6 @@ import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.codehaus.groovy.antlr.treewalker.PreOrderTraversal;
-
 public class GraftServer {
 
 	private final int port;
@@ -115,7 +113,6 @@ public class GraftServer {
 			properties.put("id", id);
 			properties.put("key", "value");
 			db.applyPropagatedProperties(properties);
-			
 			return "OK";
 		} else if (message.equals("PING")) {
 			return "OK";
