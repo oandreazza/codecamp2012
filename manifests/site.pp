@@ -76,16 +76,16 @@ class database {
 class testclient {
 	exec { "/bin/touch /testclient": }
 
-	file {'/opt/apache-jmeter.tgz':
-        	source  => 'puppet:///files/opt/apache-jmeter-2.6.tgz',
-        	ensure => 'file',
-      	}
+	#file {'/opt/apache-jmeter.tgz':
+        #	source  => 'puppet:///files/opt/apache-jmeter-2.6.tgz',
+        #	ensure => 'file',
+      	#}
 
-	exec { "/bin/tar xzf /opt/apache-jmeter.tgz":
-		cwd => "/opt",
-		creates => "/opt/apache-jmeter",
-		require => File["/opt/apache-jmeter.tgz"],
-	}
+	#exec { "/bin/tar xzf /opt/apache-jmeter.tgz":
+	#	cwd => "/opt",
+	#	creates => "/opt/apache-jmeter",
+	#	require => File["/opt/apache-jmeter.tgz"],
+	#}
 
 }
 
