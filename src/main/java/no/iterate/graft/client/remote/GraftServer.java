@@ -117,6 +117,12 @@ public class GraftServer {
 			db.applyPropagatedProperties(properties);
 			
 			return "OK";
+		} else if (message.startsWith("setReplica ")) {
+			String[] parsed = message.split(" ");
+			int port = Integer.parseInt(parsed[1]);
+			db.setReplica(port);
+			
+			return "OK";
 		} else if (message.equals("PING")) {
 			return "OK";
 		} else if (message.equals("kill")) {

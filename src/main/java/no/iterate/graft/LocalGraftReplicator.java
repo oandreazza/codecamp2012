@@ -41,4 +41,8 @@ public class LocalGraftReplicator implements GraftReplicator {
 		// NO OP here
 	}
 
+	@Override
+	public void setReplica(int port) {
+	}
+
 }

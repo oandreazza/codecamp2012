@@ -19,6 +19,26 @@ public class GraftReplicationOverSocketsTest {
 	private Graft krzys;
 	private Graft stig;
 
+	@Before
+	public void startServers() {
+		krzysReplicator = null;
+		stigReplicator = null;
+		krzys = new Graft();
+		stig = new Graft();
+	
+		krzysReplicator = new RemoteReplicator(1234, 1235, krzys);
+		krzys.setReplicator(krzysReplicator);
+	
+		stigReplicator = new RemoteReplicator(1235, 1234, stig);
+		stig.setReplicator(stigReplicator);
+	}
+
+	@After
+	public void stopServers() {
+		krzysReplicator.die();
+		stigReplicator.die();
+	}
+
 	@Test
 	public void replicateNodeOverSockets() throws Exception {
 		Node original = krzys.createNode();
@@ -51,25 +71,5 @@ public class GraftReplicationOverSocketsTest {
 		edge.put("key", "value");
 		Collection<Edge> edgesFrom = stig.getEdgesFrom(from.getId());
 		assertEquals("value", edgesFrom.iterator().next().get("key"));
-	}
-
-	@Before
-	public void startServers() {
-		krzysReplicator = null;
-		stigReplicator = null;
-		krzys = new Graft();
-		stig = new Graft();
-
-		krzysReplicator = new RemoteReplicator(1234, 1235, krzys);
-		krzys.setReplicator(krzysReplicator);
-
-		stigReplicator = new RemoteReplicator(1235, 1234, stig);
-		stig.setReplicator(stigReplicator);
-	}
-
-	@After
-	public void stopServers() {
-		krzysReplicator.die();
-		stigReplicator.die();
 	}
 }

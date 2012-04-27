@@ -9,4 +9,6 @@ public interface GraftReplicator {
 	void propagateProperties(PropertiesHolder target);
 
 	void die();
+
+	void setReplica(int port);
 }

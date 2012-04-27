@@ -8,27 +8,37 @@ import no.iterate.graft.PropertiesHolder;
 
 public class RemoteReplicator implements GraftReplicator {
 
-	private final GraftClient client;
+	private GraftClient replicaClient;
 	private final GraftServer server;
 
-	public RemoteReplicator(int port, int remote, Graft db) {
-		client = new GraftClient(remote);
+	@Deprecated // use setReplica explicitly
+	RemoteReplicator(int port, int remote, Graft db) {
+		setReplica(remote);
 		server = GraftServer.start(port, db);
+	}
+	
+	RemoteReplicator(int port, Graft db) {
+		server = GraftServer.start(port, db);
+	}
+	
+	@Override
+	public void setReplica(int port) {
+		replicaClient = new GraftClient(port);
 	}
 
 	@Override
 	public void propagateEdge(Edge edge) {
-		client.propagateEdge(edge);
+		replicaClient.propagateEdge(edge);
 	}
 
 	@Override
 	public void propagateNode(Node node) {
-		client.propagateNode(node);
+		replicaClient.propagateNode(node);
 	}
 
 	@Override
 	public void propagateProperties(PropertiesHolder target) {
-		client.propagateProperties(target);
+		replicaClient.propagateProperties(target);
 	}
 
 	@Override

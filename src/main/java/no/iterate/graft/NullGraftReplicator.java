@@ -17,4 +17,8 @@ public class NullGraftReplicator implements GraftReplicator {
 	@Override
 	public void die() {
 	}
+
+	@Override
+	public void setReplica(int port) {
+	}
 }
