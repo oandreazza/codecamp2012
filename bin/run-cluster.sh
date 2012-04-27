@@ -39,15 +39,15 @@ echo "Going to run cluster of $COUNT instance(s)..."
 AMI=ami-3850624c
 OUT=$(ec2-run-instances $AMI -n $COUNT -g $GROUP -k StarClusterCodeCamp12 -d "$USER_DATA" --instance-type $INSTANCE_TYPE)
 
-# AWK: RS is EOL regexp; RT captures the last RS found and is thus either INSTANCE or '' for the last record not followed by this
+# Get id of the first instance
 # OBS: Doesn't work if there is no instance at all in the output
-INSTANCE=$(echo "$OUT" | awk '/INSTANCE/ { print $1 }')
+#INSTANCE=$(echo "$OUT" | awk '/INSTANCE/ { print $2; exit 0 }')
 
-echo "Waiting for the 1st instance to come up... (id=$INSTANCE)"
+echo "Waiting for the instances to come up..."
 while true; do
        DESCR=$(ec2-describe-instances)
-       echo "$DESCR" | awk "/$INSTANCE.*?pending/ {exit 1}" && break
-       echo "Instance $INSTANCE. pending, waiting..."
+       echo "$DESCR" | awk "/INSTANCE.*pending.*StarClusterCodeCamp12/ {exit 1}" && break
+       echo "Some instances pending, waiting..."
        sleep 4
 done
 echo "Cluster instance hostnames:"
