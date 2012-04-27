@@ -89,8 +89,8 @@ public class Graft implements NodeListener {
 		graftSubscriptions.notifySubscribers(target);
 	}
 
-	public void setReplica(int port) {
-		graftReplicator.setReplica(port);
+	public void setReplica(String hostname, int port) {
+		graftReplicator.setReplica(hostname, port);
 	}
 
 }

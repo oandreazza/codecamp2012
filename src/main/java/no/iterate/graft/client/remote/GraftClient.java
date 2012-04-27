@@ -11,8 +11,10 @@ import java.util.Map.Entry;
 public class GraftClient {
 
 	private final int port;
+	private final String hostname;
 
-	public GraftClient(int port) {
+	public GraftClient(String hostname, int port) {
+		this.hostname = hostname;
 		this.port = port;
 	}
 
@@ -51,7 +53,7 @@ public class GraftClient {
 
 		Socket clientSocket;
 		try {
-			clientSocket = new Socket("localhost", port);
+			clientSocket = new Socket(hostname, port);
 		} catch (IOException e) {
 			return "ERROR";
 		}
@@ -75,7 +77,7 @@ public class GraftClient {
 		}
 	}
 
-	public void setReplica(int port) {
-		sendMessage("setReplica " + port); 
+	public void setReplica(String hostname, int port) {
+		sendMessage("setReplica "+ hostname + " " + port);
 	}
 }

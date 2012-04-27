@@ -37,7 +37,7 @@ public class SetReplicaCommandOverSocketsTest {
 
 	@Test
 	public void replicateNodeOverSockets() throws Exception {
-		kentReplicator.setReplica(1235);
+		kentReplicator.setReplica("localhost", 1235);
 		
 		Node original = kent.createNode();
 		Node replicated = jakub.getNodeByProperty("id", original.getId());

@@ -42,7 +42,7 @@ public class LocalGraftReplicator implements GraftReplicator {
 	}
 
 	@Override
-	public void setReplica(int port) {
+	public void setReplica(String hostname, int port) {
 	}
 
 }

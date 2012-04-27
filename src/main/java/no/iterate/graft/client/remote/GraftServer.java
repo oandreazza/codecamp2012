@@ -119,8 +119,9 @@ public class GraftServer {
 			return "OK";
 		} else if (message.startsWith("setReplica ")) {
 			String[] parsed = message.split(" ");
-			int port = Integer.parseInt(parsed[1]);
-			db.setReplica(port);
+			String hostname = parsed[1];
+			int port = Integer.parseInt(parsed[2]);
+			db.setReplica(hostname, port);
 			
 			return "OK";
 		} else if (message.equals("PING")) {

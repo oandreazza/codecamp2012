@@ -27,7 +27,7 @@ public class GraftReplicationOverSocketsTest {
 		jakub = new Graft();
 	
 		kentReplicator = new RemoteReplicator(1234, kent);
-		kentReplicator.setReplica(1235);
+		kentReplicator.setReplica("localhost", 1235);
 		kent.setReplicator(kentReplicator);
 	
 		jakubReplicator = new RemoteReplicator(1235, jakub);

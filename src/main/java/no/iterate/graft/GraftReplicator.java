@@ -10,5 +10,5 @@ public interface GraftReplicator {
 
 	void die();
 
-	void setReplica(int port);
+	void setReplica(String hostname, int port);
 }

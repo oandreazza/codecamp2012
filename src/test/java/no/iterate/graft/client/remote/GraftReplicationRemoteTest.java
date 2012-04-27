@@ -15,7 +15,7 @@ public class GraftReplicationRemoteTest {
 		GraftServer server = GraftServer.start(3456);
 		try {
 			Thread.sleep(10);
-			GraftClient client = new GraftClient(3456);
+			GraftClient client = new GraftClient("localhost", 3456);
 			String response = client.ping();
 			assertEquals("OK", response);
 		} finally {

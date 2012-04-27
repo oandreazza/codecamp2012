@@ -16,8 +16,8 @@ public class RemoteReplicator implements GraftReplicator {
 	}
 	
 	@Override
-	public void setReplica(int port) {
-		replicaClient = new GraftClient(port);
+	public void setReplica(String hostname, int port) {
+		replicaClient = new GraftClient(hostname, port);
 	}
 
 	@Override
