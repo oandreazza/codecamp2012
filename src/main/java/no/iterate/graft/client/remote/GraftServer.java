@@ -12,7 +12,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 
-class GraftServer {
+public class GraftServer {
 
 	private final int port;
 	private final Graft db;
@@ -28,7 +28,7 @@ class GraftServer {
 		return graftServer;
 	}
 
-	private GraftServer(int port, Graft db) {
+	public GraftServer(int port, Graft db) {
 		this.port = port;
 		this.db = db;
 	}
