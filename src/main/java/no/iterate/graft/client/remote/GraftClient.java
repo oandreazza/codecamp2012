@@ -1,5 +1,6 @@
 package no.iterate.graft.client.remote;
 
+import no.iterate.graft.Edge;
 import no.iterate.graft.Node;
 
 import java.io.*;
@@ -21,6 +22,14 @@ public class GraftClient {
 	public Node getNodeById(String id) {
 		String message = sendMessage("getNodeById " + id);
 		return new Node(message, null);
+	}
+
+	public void propagateNode(Node node) {
+		sendMessage("propagateNode " + node.getId());
+	}
+
+	public void propagateEdge(Edge edge) {
+		sendMessage("propagateEdge " + edge.getId() + " " + edge.getFrom().getId() + " " + edge.getTo().getId());
 	}
 
 	public String ping() {
@@ -51,9 +60,5 @@ public class GraftClient {
 				e.printStackTrace();
 			}
 		}
-	}
-
-	public void propagateNode(Node node) {
-		sendMessage("propagateNode " + node.getId());
 	}
 }

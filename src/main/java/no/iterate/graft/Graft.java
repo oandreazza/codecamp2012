@@ -67,7 +67,7 @@ public class Graft implements NodeListener {
 		graftReplicator = replicator;
 	}
 
-	void applyPropagatedEdge(Edge edge) {
+	public void applyPropagatedEdge(Edge edge) {
 		graftStorage.addReplicaEdge(edge, this);
 	}
 

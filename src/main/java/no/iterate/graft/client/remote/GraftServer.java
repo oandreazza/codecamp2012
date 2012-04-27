@@ -1,5 +1,6 @@
 package no.iterate.graft.client.remote;
 
+import no.iterate.graft.Edge;
 import no.iterate.graft.Graft;
 import no.iterate.graft.Node;
 
@@ -66,7 +67,8 @@ public class GraftServer {
 	private void step(ServerSocket server) throws IOException {
 		Socket client = server.accept();
 		try {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(client.getInputStream()));
+			BufferedReader reader = new BufferedReader(new InputStreamReader(
+					client.getInputStream()));
 			String message = reader.readLine();
 			String response = processMessage(message);
 			PrintWriter writer = new PrintWriter(client.getOutputStream(), true);
@@ -77,10 +79,10 @@ public class GraftServer {
 	}
 
 	private String processMessage(String message) {
-		if(message.equals("createNode")) {
+		if (message.equals("createNode")) {
 			Node node = db.createNode();
 			return node.getId();
-		} else if(message.startsWith("getNodeById")) {
+		} else if (message.startsWith("getNodeById")) {
 			String[] parsedMessage = message.split(" ");
 			String id = parsedMessage[1];
 			Node node = db.getNodeByProperty("id", id);
@@ -89,6 +91,18 @@ public class GraftServer {
 			String[] parsedMessage = message.split(" ");
 			String id = parsedMessage[1];
 			db.applyPropagatedNode(new Node(id, null));
+			return "OK";
+		} else if (message.startsWith("propagateEdge")) {
+			String[] parsed = message.split(" ");
+			String edgeId = parsed[1];
+			String fromNodeId = parsed[2];
+			String toNodeId = parsed[3];
+
+			Node from = db.getNodeByProperty("id", fromNodeId);
+			Node to = db.getNodeByProperty("id", toNodeId);
+			Edge edge = new Edge(edgeId, db, from, to);
+			db.applyPropagatedEdge(edge);
+			
 			return "OK";
 		} else if (message.equals("PING")) {
 			return "OK";
