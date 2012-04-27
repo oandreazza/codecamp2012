@@ -29,12 +29,9 @@ export PUPPET_MASTER=ec2-176-34-218-57.eu-west-1.compute.amazonaws.com
 read -r -d '' USER_DATA <<EOF
 #cloud-config
 
-packages:
-- puppet
-
 runcmd:
- - mkdir -p /etc/puppet
- - wget -O /etc/puppet/puppet.conf https://raw.github.com/iterate/codecamp2012/puppet/puppet.conf
+ - wget -O /etc/puppet/puppet.conf https://raw.github.com/iterate/codecamp2012/puppet/install-puppet.sh
+ - sh install-puppet.sh
  - FACTER_clustername=$CLUSTER puppetd -v --server $PUPPET_MASTER -w 60
 EOF
 
