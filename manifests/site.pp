@@ -41,6 +41,7 @@ class database {
 	file {'/opt/graft.jar':
                 source  => 'puppet:///files/opt/graft-0.0.1-SNAPSHOT.jar',
                 ensure => 'file',
+		notify => Service['graft'],
         }
 
         file { "/etc/init.d/graft-run":
@@ -66,6 +67,7 @@ class database {
 	service { "graft":
         	start => '/etc/init.d/graft start',
         	stop => '/etc/init.d/graft stop',
+		restart => '/etc/init.d/graft restart',
         	ensure => running,
 		require => [ File['/opt/graft.jar'], File['/etc/init.d/graft-run'], Package[$java_pkg] ],
     }
