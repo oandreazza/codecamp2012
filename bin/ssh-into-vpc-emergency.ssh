@@ -1,1 +1,3 @@
-ssh -o StrictHostKeyChecking=no -i .aws/StarClusterCodeCamp12-key.pem ec2-user@46.51.196.99
+#!/bin/sh
+if [ -z "$TARGET" ]; then echo "Run via TARGET=<instance hostname> $0"; exit 1; fi
+ssh -o StrictHostKeyChecking=no -i /root/.aws/StarClusterCodeCamp12-key.pem ec2-user@$TARGET
