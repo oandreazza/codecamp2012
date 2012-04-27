@@ -121,7 +121,6 @@ public class GraftServer {
 			String[] parsed = message.split(" ");
 			String hostname = parsed[1];
 			int port = Integer.parseInt(parsed[2]);
-			db.setReplicator(new RemoteReplicator());
 			db.setReplica(hostname, port);
 			
 			return "OK";

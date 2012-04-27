@@ -9,15 +9,12 @@ import no.iterate.graft.PropertiesHolder;
 public class RemoteReplicator implements GraftReplicator {
 
 	private GraftClient replicaClient;
-	private GraftServer server;
+	private final GraftServer server;
 
 	RemoteReplicator(int port, Graft db) {
 		server = GraftServer.start(port, db);
 	}
 	
-	RemoteReplicator() {
-	}
-
 	@Override
 	public void setReplica(String hostname, int port) {
 		replicaClient = new GraftClient(hostname, port);
