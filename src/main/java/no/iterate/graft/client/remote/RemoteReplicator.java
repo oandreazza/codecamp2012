@@ -11,12 +11,6 @@ public class RemoteReplicator implements GraftReplicator {
 	private GraftClient replicaClient;
 	private final GraftServer server;
 
-	@Deprecated // use setReplica explicitly
-	RemoteReplicator(int port, int remote, Graft db) {
-		setReplica(remote);
-		server = GraftServer.start(port, db);
-	}
-	
 	RemoteReplicator(int port, Graft db) {
 		server = GraftServer.start(port, db);
 	}

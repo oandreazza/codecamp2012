@@ -1,13 +1,12 @@
 package no.iterate.graft.client.remote;
 
-import static org.junit.Assert.*;
-import no.iterate.graft.Node;
-
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.SocketTimeoutException;
+
+import org.junit.Test;
 
 public class GraftReplicationRemoteTest {
 

@@ -77,6 +77,5 @@ public class GraftClient {
 
 	public void setReplica(int port) {
 		sendMessage("setReplica " + port); 
-		
 	}
 }

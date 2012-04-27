@@ -1,10 +1,6 @@
 package no.iterate.graft.client.remote;
 
 import static org.junit.Assert.assertEquals;
-
-import java.util.Collection;
-
-import no.iterate.graft.Edge;
 import no.iterate.graft.Graft;
 import no.iterate.graft.Node;
 
@@ -14,38 +10,37 @@ import org.junit.Test;
 
 public class SetReplicaCommandOverSocketsTest {
 
-	private RemoteReplicator krzysReplicator;
-	private RemoteReplicator stigReplicator;
-	private Graft krzys;
-	private Graft stig;
+	private RemoteReplicator kentReplicator;
+	private RemoteReplicator jakubReplicator;
+	private Graft kent;
+	private Graft jakub;
 
 	@Before
 	public void startServers() {
-		krzysReplicator = null;
-		stigReplicator = null;
-		krzys = new Graft();
-		stig = new Graft();
+		kentReplicator = null;
+		jakubReplicator = null;
+		kent = new Graft();
+		jakub = new Graft();
 	
-		krzysReplicator = new RemoteReplicator(1234, krzys);
-		krzys.setReplicator(krzysReplicator);
+		kentReplicator = new RemoteReplicator(1234, kent);
+		kent.setReplicator(kentReplicator);
 	
-		stigReplicator = new RemoteReplicator(1235, stig);
-		stig.setReplicator(stigReplicator);
+		jakubReplicator = new RemoteReplicator(1235, jakub);
+		jakub.setReplicator(jakubReplicator);
 	}
 
 	@After
 	public void stopServers() {
-		krzysReplicator.die();
-		stigReplicator.die();
+		kentReplicator.die();
+		jakubReplicator.die();
 	}
 
 	@Test
 	public void replicateNodeOverSockets() throws Exception {
-		// Use Client to tell the server who its replica is
-		new GraftClient(1234).setReplica(1235); krzysReplicator.setReplica(1235); // replace with client call
+		kentReplicator.setReplica(1235);
 		
-		Node original = krzys.createNode();
-		Node replicated = stig.getNodeByProperty("id", original.getId());
+		Node original = kent.createNode();
+		Node replicated = jakub.getNodeByProperty("id", original.getId());
 		
 		assertEquals(original.getId(), replicated.getId());
 	}

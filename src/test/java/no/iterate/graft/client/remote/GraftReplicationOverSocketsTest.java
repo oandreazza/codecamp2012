@@ -14,62 +14,63 @@ import org.junit.Test;
 
 public class GraftReplicationOverSocketsTest {
 
-	private RemoteReplicator krzysReplicator;
-	private RemoteReplicator stigReplicator;
-	private Graft krzys;
-	private Graft stig;
+	private RemoteReplicator kentReplicator;
+	private RemoteReplicator jakubReplicator;
+	private Graft kent;
+	private Graft jakub;
 
 	@Before
 	public void startServers() {
-		krzysReplicator = null;
-		stigReplicator = null;
-		krzys = new Graft();
-		stig = new Graft();
+		kentReplicator = null;
+		jakubReplicator = null;
+		kent = new Graft();
+		jakub = new Graft();
 	
-		krzysReplicator = new RemoteReplicator(1234, 1235, krzys);
-		krzys.setReplicator(krzysReplicator);
+		kentReplicator = new RemoteReplicator(1234, kent);
+		kentReplicator.setReplica(1235);
+		kent.setReplicator(kentReplicator);
 	
-		stigReplicator = new RemoteReplicator(1235, 1234, stig);
-		stig.setReplicator(stigReplicator);
+		jakubReplicator = new RemoteReplicator(1235, jakub);
+		jakub.setReplicator(jakubReplicator);
 	}
 
 	@After
 	public void stopServers() {
-		krzysReplicator.die();
-		stigReplicator.die();
+		kentReplicator.die();
+		jakubReplicator.die();
 	}
 
 	@Test
 	public void replicateNodeOverSockets() throws Exception {
-		Node original = krzys.createNode();
-		Node replicated = stig.getNodeByProperty("id", original.getId());
+		Node original = kent.createNode();
+		Node replicated = jakub.getNodeByProperty("id", original.getId());
 		assertEquals(original.getId(), replicated.getId());
 	}
 	
 	@Test
 	public void replicateEdgeOverSockets() {
-		Node from = krzys.createNode();
-		Node to = krzys.createNode();
-		Edge edge = krzys.createEdge(from, to);
-		Collection<Edge> edgesFrom = stig.getEdgesFrom(from.getId());
+		Node from = kent.createNode();
+		Node to = kent.createNode();
+		Edge edge = kent.createEdge(from, to);
+		Collection<Edge> edgesFrom = jakub.getEdgesFrom(from.getId());
 		assertEquals(edge.getId(), edgesFrom.iterator().next().getId());
 	}
 	
 	@Test
 	public void replicateNodePropertiesOverSockets() {
-		Node node = krzys.createNode();
+		Node node = kent.createNode();
 		node.put("key", "value");
-		Node replicated = stig.getNodeByProperty("id", node.getId());
+		Node replicated = jakub.getNodeByProperty("id", node.getId());
 		assertEquals("value", replicated.get("key"));
 	}
 	
 	@Test
 	public void replicateEdgePropertiesOverSockets() {
-		Node from = krzys.createNode();
-		Node to = krzys.createNode();
-		Edge edge = krzys.createEdge(from, to);
+		Node from = kent.createNode();
+		Node to = kent.createNode();
+		Edge edge = kent.createEdge(from, to);
 		edge.put("key", "value");
-		Collection<Edge> edgesFrom = stig.getEdgesFrom(from.getId());
+		Collection<Edge> edgesFrom = jakub.getEdgesFrom(from.getId());
 		assertEquals("value", edgesFrom.iterator().next().get("key"));
 	}
 }
