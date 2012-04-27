@@ -35,6 +35,14 @@ public class GraftClient {
 				+ edge.getFrom().getId() + " " + edge.getTo().getId());
 	}
 
+	public void propagateProperties(PropertiesHolder target) {
+		String message = "propagateProperties ";
+		for (Entry<String, String> each : target.getProperties().entrySet()) {
+			message += each.getKey() + ":" + each.getValue() + " ";
+		}
+		sendMessage(message);
+	}
+
 	public String ping() {
 		return sendMessage("PING");
 	}
@@ -65,13 +73,5 @@ public class GraftClient {
 				e.printStackTrace();
 			}
 		}
-	}
-
-	public void propagateProperties(PropertiesHolder target) {
-		String message = "propagateProperties ";
-		for (Entry<String, String> each : target.getProperties().entrySet()) {
-			message += each.getKey() + ":" + each.getValue() + " ";
-		}
-		sendMessage(message);
 	}
 }

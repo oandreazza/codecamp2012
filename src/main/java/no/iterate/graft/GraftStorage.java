@@ -46,7 +46,7 @@ public class GraftStorage {
 		return addEdgeWithId(generateId(), listener, from, to);
 	}
 
-	Edge addEdgeWithId(String id,Graft listener, Node from, Node to) {
+	Edge addEdgeWithId(String id, Graft listener, Node from, Node to) {
 		Edge edge = new Edge(id, listener, from, to);
 		edges.add(edge);
 		return edge;
@@ -72,14 +72,13 @@ public class GraftStorage {
 
 	void updateNode(Map<String, String> properties) {
 		String targetId = properties.get(Graft.ID);
-		PropertiesHolder node;
+		PropertiesHolder holder;
 		try {
-			node = getNodeById(targetId);
+			holder = getNodeById(targetId);
 		} catch (IllegalStateException e) {
-			node = getEdgeById(targetId);
+			holder = getEdgeById(targetId);
 		}
-		node.setProperties(properties);
-
+		holder.setProperties(properties);
 	}
 
 	void addReplicaEdge(Edge edge, Graft graft) {

@@ -36,11 +36,21 @@ public class GraftReplicationOverSocketsTest {
 	}
 	
 	@Test
-	public void replicatePropertiesOverSockets() {
+	public void replicateNodePropertiesOverSockets() {
 		Node node = krzys.createNode();
 		node.put("key", "value");
 		Node replicated = stig.getNodeByProperty("id", node.getId());
 		assertEquals("value", replicated.get("key"));
+	}
+	
+	@Test
+	public void replicateEdgePropertiesOverSockets() {
+		Node from = krzys.createNode();
+		Node to = krzys.createNode();
+		Edge edge = krzys.createEdge(from, to);
+		edge.put("key", "value");
+		Collection<Edge> edgesFrom = stig.getEdgesFrom(from.getId());
+		assertEquals("value", edgesFrom.iterator().next().get("key"));
 	}
 
 	@Before

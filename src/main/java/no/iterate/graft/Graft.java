@@ -75,7 +75,7 @@ public class Graft implements NodeListener {
 		graftStorage.addReplicaNode(node, this);
 	}
 
-public 	void applyPropagatedProperties(Map<String, String> properties) {
+	public void applyPropagatedProperties(Map<String, String> properties) {
 		graftStorage.updateNode(properties);
 	}
 
